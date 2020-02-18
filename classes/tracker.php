@@ -24,7 +24,7 @@ require_once($CFG->libdir . '/weblib.php');
  * based on tool_uploadcourse 2013 Frédéric Massart
  *
  * @package   tool_uploadpage
- * @copyright 2019 LushOnline
+ * @copyright 2019-2020 LushOnline
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_uploadpage_tracker {
@@ -98,7 +98,7 @@ class tool_uploadpage_tracker {
      * @param int $created count of courses created.
      * @param int $updated count of courses updated.
      * @param int $deleted count of courses deleted.
-	 * @param int $nochange count of courses unchanged.
+     * @param int $nochange count of courses unchanged.
      * @param int $errors count of errors.
      * @return void
      */
@@ -112,7 +112,7 @@ class tool_uploadpage_tracker {
             get_string('coursescreated', 'tool_uploadpage', $created),
             get_string('coursesupdated', 'tool_uploadpage', $updated),
             get_string('coursesdeleted', 'tool_uploadpage', $deleted),
-			get_string('coursesnotupdated', 'tool_uploadpage', $nochange),
+            get_string('coursesnotupdated', 'tool_uploadpage', $nochange),
             get_string('courseserrors', 'tool_uploadpage', $errors)
         );
 

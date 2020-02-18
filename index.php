@@ -18,9 +18,9 @@
  * Import a framework.
  *
  * @package    tool_uploadpage
- * @copyright  2019 LushOnline
+ * @copyright  2019-2020 LushOnline
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * 
+ *
  */
 
 require_once(__DIR__ . '/../../../config.php');
@@ -50,56 +50,50 @@ $text = null;
 $encoding = null;
 $delimiter = null;
 
-//First time - import_form returns a 0, and import_confirm_form a 1
+// First time - import_form returns a 0, and import_confirm_form a 1.
 if (empty($importid)) {
     $mform1 = new tool_uploadpage_import_form($url->out(false));
-	
-	//Was the first form submitted
+    // Was the first form submitted.
     if ($form1data = $mform1->get_data()) {
-       $text = $mform1->get_file_content('importfile');
-       $encoding = $form1data->encoding;
-       $delimiter = $form1data->delimiter_name;
-	   
+        $text = $mform1->get_file_content('importfile');
+        $encoding = $form1data->encoding;
+        $delimiter = $form1data->delimiter_name;
     } else {
-		//First time
-		echo $OUTPUT->header();
+        // First time.
+        echo $OUTPUT->header();
         echo $OUTPUT->heading($pagetitle);
         $mform1->display();
         echo $OUTPUT->footer();
-		die();
-	}
+        die();
+    }
 }
 
 $importer = new tool_uploadpage_importer($text, $encoding, $delimiter);
 unset($text);
 $mform2 = new tool_uploadpage_import_confirm_form(null, $importer);
 
-//Was the second form submitted
+// Was the second form submitted.
 if ($form2data = $mform2->is_cancelled()) {
-	redirect($returnurl);
+    redirect($returnurl);
 } else if ($form2data = $mform2->get_data()) {
-	$importid = $form2data->importid;
-	$category = $form2data->category;
-	
-	$importer = new tool_uploadpage_importer(null, null, null, $category, $importid, $form2data);
-	
-	$error = $importer->get_error();
-	if ($error) {
-		redirect($returnurl);
-	} else {
-		echo $OUTPUT->header();
-		echo $OUTPUT->heading(get_string('uploadpageresult', 'tool_uploadpage'));
-		$records = $importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_HTML));
-		echo $OUTPUT->continue_button($url);
-	}
+    $importid = $form2data->importid;
+    $category = $form2data->category;
+    $importer = new tool_uploadpage_importer(null, null, null, $category, $importid, $form2data);
+    $error = $importer->get_error();
+    if ($error) {
+        redirect($returnurl);
+    } else {
+        echo $OUTPUT->header();
+        echo $OUTPUT->heading(get_string('uploadpageresult', 'tool_uploadpage'));
+        $records = $importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_HTML));
+        echo $OUTPUT->continue_button($url);
+    }
 } else {
-	//First time
-	echo $OUTPUT->header();
-	echo $OUTPUT->heading($pagetitle);
-	$mform2->display();
-	echo $OUTPUT->footer();
-	die();
+    // First time.
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading($pagetitle);
+    $mform2->display();
+    echo $OUTPUT->footer();
+    die();
 }
-
-
 echo $OUTPUT->footer();

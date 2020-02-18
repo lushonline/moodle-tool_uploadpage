@@ -19,16 +19,16 @@
  *
  * This file contains links and settings used by tool_uploadpage
  *
- * @package    tool_uploadpage
- * @copyright  2019 LushOnline
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   tool_uploadpage
+ * @copyright 2019-2020 LushOnline
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
     $ADMIN->add('courses', new admin_externalpage(
-		'tooluploadpage',
-		get_string('pluginname', 'tool_uploadpage'),
-		new moodle_url('/admin/tool/uploadpage/index.php'))
-	);
+    'tooluploadpage',
+    get_string('pluginname', 'tool_uploadpage'),
+    new moodle_url('/admin/tool/uploadpage/index.php'))
+    );
 }

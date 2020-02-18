@@ -18,7 +18,7 @@
  * Privacy Subsystem implementation for tool_uploadpage.
  *
  * @package    tool_uploadpage
- * @copyright  2019 LushOnline
+ * @copyright  2019-2020 LushOnline
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Privacy Subsystem for tool_uploadpage implementing null_provider.
  *
- * @copyright  2019 LushOnline
+ * @copyright  2019-2020 LushOnline
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\null_provider {

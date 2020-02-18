@@ -18,7 +18,7 @@
  * This file contains the form to add/update a Percipio Course
  *
  * @package   tool_uploadpage
- * @copyright 2019 LushOnline
+ * @copyright 2019-2020 LushOnline
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/course/lib.php');
  * Import Percipio Course form mapping.
  *
  * @package   tool_uploadpage
- * @copyright 2019 LushOnline
+ * @copyright 2019-2020 LushOnline
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_uploadpage_import_confirm_form extends moodleform {
@@ -46,16 +46,16 @@ class tool_uploadpage_import_confirm_form extends moodleform {
 
         $mform->addElement('hidden', 'confirm', 1);
         $mform->setType('confirm', PARAM_BOOL);
-        
+
         $mform->addElement('hidden', 'needsconfirm', 1);
         $mform->setType('needsconfirm', PARAM_BOOL);
-        
+
         $mform->addElement('hidden', 'importid', $importer->get_importid());
         $mform->setType('importid', PARAM_INT);
 
         $mform->addElement('header', 'columnsheader', get_string('columnsheader', 'tool_uploadpage'));
         $mform->setExpanded('columnsheader', true);
-        
+
         $requiredheaders = $importer->list_required_headers();
         $foundheaders = $importer->list_found_headers();
 
@@ -76,16 +76,16 @@ class tool_uploadpage_import_confirm_form extends moodleform {
         // Default values.
         $mform->addElement('header', 'importvaluesheader', get_string('importvaluesheader', 'tool_uploadpage'));
         $mform->setExpanded('importvaluesheader', true);
-        
+
         if (method_exists('\core_course_category', 'make_categories_list')) {
             $displaylist = core_course_category::make_categories_list('moodle/course:create');
         } else {
             $displaylist = coursecat::make_categories_list('moodle/course:create');
         }
-        
+
         $mform->addElement('select', 'category', get_string('coursecategory'), $displaylist);
         $mform->addHelpButton('category', 'coursecategory');
-        
+
         $this->add_action_buttons(true, get_string('confirm', 'tool_uploadpage'));
     }
 }

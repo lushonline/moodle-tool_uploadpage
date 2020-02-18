@@ -18,17 +18,17 @@
  * Plugin version info
  *
  * @package    tool_uploadpage
- * @copyright  2019 LushOnline
+ * @copyright  2019-2020 LushOnline
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version   = 2019101800; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2020021800; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2016052300; // Requires this Moodle version v3.1 see https://docs.moodle.org/dev/Releases.
 $plugin->component = 'tool_uploadpage'; // Full name of the plugin (used for diagnostics).
 $plugin->dependencies = null;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0';
+$plugin->release = '1.1';
 

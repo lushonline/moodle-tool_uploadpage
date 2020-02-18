@@ -18,7 +18,7 @@
  * CLI Bulk Single Page Activity course registration script from a comma separated file.
  *
  * @package    tool_uploadpage
- * @copyright  2019 LushOnline
+ * @copyright  2019-2020 LushOnline
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,9 +31,9 @@ require_once($CFG->libdir . '/coursecatlib.php');
 require_once($CFG->libdir . '/clilib.php');
 
 if (method_exists('\core_course_category', 'get_default')) {
-	$defaultcategory = core_course_category::get_default()->id;
+    $defaultcategory = core_course_category::get_default()->id;
 } else {
-	$defaultcategory = coursecat::get_default()->id;
+    $defaultcategory = coursecat::get_default()->id;
 }
 
 // Now get cli options.
@@ -83,8 +83,6 @@ if (!empty($options['source'])) {
     $options['source'] = realpath($options['source']);
 }
 
-//var_dump($options);
-
 if (!file_exists($options['source'])) {
     echo get_string('invalidcsvfile', 'tool_uploadpage')."\n";
     echo $help;
@@ -111,9 +109,9 @@ unset($content);
 
 $error = $importer->get_error();
 if ($error) {
-	print_error('invalidimportfile', 'tool_uploadpage', '', $importer->get_error());
+    print_error('invalidimportfile', 'tool_uploadpage', '', $importer->get_error());
 } else if (count($importer->records) == 0) {
-	print_error('csvemptyfile', 'error', '', $importer->get_error());
+    print_error('csvemptyfile', 'error', '', $importer->get_error());
 }
 
 $importer = new tool_uploadpage_importer(null, null, null, $options['categoryid'], $importid, null);

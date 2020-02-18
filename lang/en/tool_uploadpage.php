@@ -18,7 +18,7 @@
  * Strings for component 'tool_uploadpage', language 'en'
  *
  * @package    tool_uploadpage
- * @copyright  2019 LushOnline
+ * @copyright  2019-2020 LushOnline
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -40,7 +40,7 @@ $string['encoding_help'] = 'Encoding of the CSV file.';
 $string['importvaluesheader'] = 'Import Settings';
 $string['columnsheader'] = 'Columns';
 
-//Tracker
+// Tracker.
 $string['csvline'] = 'Line';
 $string['id'] = 'ID';
 $string['result'] = 'Result';
@@ -52,9 +52,8 @@ $string['coursesdeleted'] = 'Courses deleted: {$a}';
 $string['coursesnotupdated'] = 'Courses not updated: {$a}';
 $string['courseserrors'] = 'Courses errors: {$a}';
 
-//CLI
+// CLI.
 $string['invalidcsvfile'] = 'File format is invalid.';
 $string['invalidencoding'] = 'Invalid Encoding Specified';
 
-//Helper
-
+// Helper.

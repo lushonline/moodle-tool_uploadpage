@@ -18,4 +18,6 @@ Click the 'Notifications' link on the frontpage administration block or from you
 run: php admin/cli/upgrade.php if you have access to a command line interpreter.
 
 
+For more information see the Wiki Pages
+https://github.com/lushonline/moodle-tool_uploadpage/wiki
 

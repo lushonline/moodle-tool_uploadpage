@@ -21,3 +21,5 @@ run: php admin/cli/upgrade.php if you have access to a command line interpreter.
 For more information see the Wiki Pages
 https://github.com/lushonline/moodle-tool_uploadpage/wiki
 
+
+This was inspired in part by the great work of Frédéric Massart and Piers harding on the core admin\tool\uploadcourse

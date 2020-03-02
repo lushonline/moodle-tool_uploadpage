@@ -72,7 +72,7 @@ class tool_uploadpage_helper {
     /**
      * Resolve a category by ID
      *
-     * @param string $idnumber category ID.
+     * @param string $id category ID.
      * @return int category ID.
      */
     public static function resolve_category_by_id_or_idnumber($id) {
@@ -99,6 +99,7 @@ class tool_uploadpage_helper {
      * Retrieve a page by its name.
      *
      * @param string $name page name
+     * @param string $courseid course identifier
      * @return object page.
      */
     public static function get_page_by_name($name, $courseid) {
@@ -217,7 +218,6 @@ class tool_uploadpage_helper {
      * Create a page from the import record.
      *
      * @param object $record Validated Imported Record
-     * @param string $pagetemplate The template to use for the description, if not specified use self::$default_pagetemplate
      * @return object course or null
      */
     public static function create_page_from_import_record($record) {
@@ -237,7 +237,7 @@ class tool_uploadpage_helper {
      * Merge changes from $importedcourse into $existingcourse
      *
      * @param object $existingcourse Course Record for existing course
-     * @param object $newcourse  Course Record for imported course
+     * @param object $importedcourse  Course Record for imported course
      * @return object course or FALSE if no changes
      */
     public static function update_course_with_import_course($existingcourse, $importedcourse) {
@@ -307,7 +307,7 @@ class tool_uploadpage_helper {
      * Merge changes from $importedpage into $existingpage
      *
      * @param object $existingpage Page Record for existing page
-     * @param object $newpage  page Record for imported page
+     * @param object $importedpage  page Record for imported page
      * @return object page or FALSE if no changes
      */
     public static function update_page_with_import_page($existingpage, $importedpage) {

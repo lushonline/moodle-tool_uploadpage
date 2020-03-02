@@ -15,23 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the form add/update a competency framework.
+ * This file contains the form add/update a page framework.
  *
  * @package   tool_uploadpage
  * @copyright 2019-2020 LushOnline
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
-
 require_once($CFG->libdir.'/formslib.php');
 
-/**
- * Import Percipio Courses form.
- *
- * @package   tool_uploadpage
- * @copyright 2019-2020 LushOnline
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class tool_uploadpage_import_form extends moodleform {
 
     /**
@@ -71,6 +63,12 @@ class tool_uploadpage_import_form extends moodleform {
         $this->add_action_buttons(false, get_string('import', 'tool_uploadpage'));
     }
 
+    /**
+     * Set the error message
+     *
+     * @param string $msg
+     * @return void
+     */
     public function set_import_error($msg) {
         $mform = $this->_form;
 

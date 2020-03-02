@@ -24,6 +24,10 @@
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * The form for add/update a page framework.
+ *
+ */
 class tool_uploadpage_import_form extends moodleform {
 
     /**

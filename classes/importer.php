@@ -23,16 +23,37 @@
  */
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
+/**
+ * Main processing class for adding and updating single page course.
+ *
+ */
 class tool_uploadpage_importer {
 
+    // The description of the last error
     protected $error = '';
+
+    // The records to process
     protected $records = array();
+
+    // The importid
     protected $importid = 0;
+
+    // The importer object
     protected $importer = null;
+
+    // The headers found in the import file
     protected $foundheaders = array();
+
+    // The generator used for creating the courses and activities
     protected $generator = null;
+
+    // The array of all errors identified
     protected $errors = array();
+
+    // The current linenumber
     protected $linenb = 0;
+
+    // The boolean indicating if the processing has started
     protected $processstarted = false;
 
     /**

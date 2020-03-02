@@ -26,7 +26,9 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
-
+/**
+ * Class containing a set of helpers
+ */
 class tool_uploadpage_helper {
 
     /**

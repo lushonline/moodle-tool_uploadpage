@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the procesing for the add/update of a Percipio Course.
+ * This file contains the procesing for the add/update of a single page course.
  *
  * @package   tool_uploadpage
  * @copyright 2019-2020 LushOnline
@@ -23,13 +23,6 @@
  */
 defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 
-/**
- * Import Course form.
- *
- * @package   tool_uploadpage
- * @copyright 2019-2020 LushOnline
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class tool_uploadpage_importer {
 
     protected $error = '';
@@ -42,15 +35,31 @@ class tool_uploadpage_importer {
     protected $linenb = 0;
     protected $processstarted = false;
 
+    /**
+     * Return a Failure
+     *
+     * @param string $msg
+     * @return bool Always returns false
+     */
     public function fail($msg) {
         $this->error = $msg;
         return false;
     }
 
+    /**
+     * Get the importid
+     *
+     * @return string the import id
+     */
     public function get_importid() {
         return $this->importid;
     }
 
+    /**
+     * Return the list of required headers for the import
+     *
+     * @return array contains the column headers
+     */
     public static function list_required_headers() {
         return array(
         'COURSE_IDNUMBER',
@@ -67,10 +76,21 @@ class tool_uploadpage_importer {
         );
     }
 
+    /**
+     * Retunr the list of headers found in the CSV
+     *
+     * @return array contains the column headers
+     */
     public function list_found_headers() {
         return $this->foundheaders;
     }
 
+    /**
+     * Get the mapping array of file column position to our object values
+     *
+     * @param object $data
+     * @return array the object key to column
+     */
     private function read_mapping_data($data) {
         if ($data) {
             return array(
@@ -103,6 +123,13 @@ class tool_uploadpage_importer {
         }
     }
 
+    /**
+     * Get the row of data from the CSV
+     *
+     * @param int $row
+     * @param int $index
+     * @return object
+     */
     private function get_row_data($row, $index) {
         if ($index < 0) {
             return '';
@@ -111,7 +138,14 @@ class tool_uploadpage_importer {
     }
 
     /**
-     * Constructor - parses the raw text for sanity.
+     * Constructor
+     *
+     * @param string $text
+     * @param string $encoding
+     * @param string $delimiter
+     * @param integer $category
+     * @param integer $importid
+     * @param object $mappingdata
      */
     public function __construct($text = null, $encoding = null, $delimiter = 'comma',
                                 $category=1, $importid = 0, $mappingdata = null) {
@@ -191,7 +225,9 @@ class tool_uploadpage_importer {
     }
 
     /**
-     * @return array of errors from parsing the xml.
+     * Get the error information
+     *
+     * @return string the last error
      */
     public function get_error() {
         return $this->error;

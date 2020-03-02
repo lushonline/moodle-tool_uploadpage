@@ -17,8 +17,7 @@
 /**
  * Links and settings
  *
- * Class containing a set of helpers, based on admin\tool\uploadcourse
- * by 2013 Frédéric Massart
+ * Class containing a set of helpers, based on admin\tool\uploadcourse by 2013 Frédéric Massart.
  *
  * @package    tool_uploadpage
  * @copyright  2019-2020 LushOnline
@@ -27,7 +26,11 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Class containing a set of helpers
+ * Class containing a set of helpers.
+ *
+ * @package   tool_uploadpage
+ * @copyright 2019-2020 LushOnline
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_uploadpage_helper {
 

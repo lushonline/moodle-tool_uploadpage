@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the tracking reporting,
- * based on tool_uploadcourse 2013 Frédéric Massart
+ * This file contains the tracking reporting, based on tool_uploadcourse 2013 Frédéric Massart.
  *
  * @package   tool_uploadpage
  * @copyright 2019-2020 LushOnline
@@ -27,6 +26,10 @@ require_once($CFG->libdir . '/weblib.php');
 
 /**
  * The tracking reporting class.
+ *
+ * @package   tool_uploadpage
+ * @copyright 2019-2020 LushOnline
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_uploadpage_tracker {
 

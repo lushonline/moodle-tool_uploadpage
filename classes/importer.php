@@ -26,34 +26,55 @@ defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 /**
  * Main processing class for adding and updating single page course.
  *
+ * @package   tool_uploadpage
+ * @copyright 2019-2020 LushOnline
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_uploadpage_importer {
 
-    // The description of the last error
+    /**
+     * Last error message.
+     */
     protected $error = '';
 
-    // The records to process
+    /**
+     * The records to process.
+     */
     protected $records = array();
 
-    // The importid
+    /**
+     * The import id.
+     */
     protected $importid = 0;
 
-    // The importer object
+    /**
+     * The importer object.
+     */
     protected $importer = null;
 
-    // The headers found in the import file
+    /**
+     * The headers found in the import file.
+     */
     protected $foundheaders = array();
 
-    // The generator used for creating the courses and activities
+    /**
+     * The generator used for creating the courses and activities.
+     */
     protected $generator = null;
 
-    // The array of all errors identified
+    /**
+     * The array of all errors identified.
+     */
     protected $errors = array();
 
-    // The current linenumber
+    /**
+     * The current line number we are processing.
+     */
     protected $linenb = 0;
 
-    // The boolean indicating if the processing has started
+    /**
+     * Indicates if we have started processing.
+     */
     protected $processstarted = false;
 
     /**

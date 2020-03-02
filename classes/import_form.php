@@ -27,6 +27,9 @@ require_once($CFG->libdir.'/formslib.php');
 /**
  * The form for add/update a page framework.
  *
+ * @package   tool_uploadpage
+ * @copyright 2019-2020 LushOnline
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_uploadpage_import_form extends moodleform {
 

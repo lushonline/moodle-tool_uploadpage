@@ -33,47 +33,47 @@ defined('MOODLE_INTERNAL') || die('Direct access to this script is forbidden.');
 class tool_uploadpage_importer {
 
     /**
-     * Last error message.
+     * @var string $error   Last error message.
      */
     protected $error = '';
 
     /**
-     * The records to process.
+     * @var array $records   The records to process.
      */
     protected $records = array();
 
     /**
-     * The import id.
+     * @var int $importid   The import id.
      */
     protected $importid = 0;
 
     /**
-     * The importer object.
+     * @var object $importer   The importer object.
      */
     protected $importer = null;
 
     /**
-     * The headers found in the import file.
+     * @var array $foundheaders   The headers found in the import file.
      */
     protected $foundheaders = array();
 
     /**
-     * The generator used for creating the courses and activities.
+     * @var object $generator   The generator used for creating the courses and activities.
      */
     protected $generator = null;
 
     /**
-     * The array of all errors identified.
+     * @var array $errors   The array of all errors identified.
      */
     protected $errors = array();
 
     /**
-     * The current line number we are processing.
+     * @var int $error   The current line number we are processing.
      */
     protected $linenb = 0;
 
     /**
-     * Indicates if we have started processing.
+     * @var bool $processstarted   Indicates if we have started processing.
      */
     protected $processstarted = false;
 

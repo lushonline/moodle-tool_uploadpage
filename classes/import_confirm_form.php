@@ -39,7 +39,6 @@ class tool_uploadpage_import_confirm_form extends moodleform {
      * Define the form - called by parent constructor
      */
     public function definition() {
-        global $CFG;
         $importer = $this->_customdata;
 
         $mform = $this->_form;

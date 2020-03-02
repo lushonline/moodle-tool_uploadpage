@@ -363,7 +363,7 @@ class tool_uploadpage_importer {
                         // Course or page differs so we need to update.
                         $updated++;
                         if ($updatecourse) {
-                            $courseupdateresult = update_course($mergedcourse);
+                            update_course($mergedcourse);
                             $status = array("Course Updated");
                         }
 

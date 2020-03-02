@@ -22,13 +22,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Upload Single Page Courses';
+$string['pluginname'] = 'Upload single page courses';
 $string['importfile'] = 'CSV file';
 $string['invalidimportfile'] = 'File format is invalid.';
 $string['import'] = 'Import';
-$string['coursescreated'] = 'Courses Created/Updated Successfully';
+$string['coursescreated'] = 'Courses created/updated successfully';
 
-$string['cachedef_helper'] = 'Upload Page Helper caching';
+$string['cachedef_helper'] = 'Upload page helper caching';
 
 $string['confirm'] = 'Confirm';
 $string['confirmcolumnmappings'] = 'Confirm the columns mappings';
@@ -37,7 +37,7 @@ $string['csvdelimiter_help'] = 'CSV delimiter of the CSV file.';
 $string['encoding'] = 'Encoding';
 $string['encoding_help'] = 'Encoding of the CSV file.';
 
-$string['importvaluesheader'] = 'Import Settings';
+$string['importvaluesheader'] = 'Import settings';
 $string['columnsheader'] = 'Columns';
 
 // Tracker.
@@ -54,6 +54,6 @@ $string['courseserrors'] = 'Courses errors: {$a}';
 
 // CLI.
 $string['invalidcsvfile'] = 'File format is invalid.';
-$string['invalidencoding'] = 'Invalid Encoding Specified';
+$string['invalidencoding'] = 'Invalid encoding specified';
 
 // Helper.

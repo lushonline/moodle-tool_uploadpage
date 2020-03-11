@@ -193,7 +193,6 @@ class tool_uploadpage_helper {
      */
     public static function get_or_create_category_from_import_record($record) {
         global $CFG;
-        require_once($CFG->libdir . '/coursecatlib.php');
         $categoryid = $record->category;
 
         if (!empty($record->course_categoryidnumber)) {
@@ -210,6 +209,7 @@ class tool_uploadpage_helper {
                     if (method_exists('\core_course_category', 'create')) {
                         $createdcategory = core_course_category::create($category);
                     } else {
+                        require_once($CFG->libdir . '/coursecatlib.php');
                         $createdcategory = coursecat::create($category);
                     }
                     $categoryid = $createdcategory->id;

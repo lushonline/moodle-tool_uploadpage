@@ -286,7 +286,6 @@ class tool_uploadpage_importer {
 
         require_once($CFG->dirroot . '/course/lib.php');
         require_once($CFG->libdir . '/phpunit/classes/util.php');
-        require_once($CFG->libdir . '/coursecatlib.php');
         require_once($CFG->dirroot . '/mod/page/lib.php');
 
         if ($this->processstarted) {

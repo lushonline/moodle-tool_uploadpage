@@ -27,12 +27,12 @@ define('CLI_SCRIPT', true);
 require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/phpunit/classes/util.php');
-require_once($CFG->libdir . '/coursecatlib.php');
 require_once($CFG->libdir . '/clilib.php');
 
 if (method_exists('\core_course_category', 'get_default')) {
     $defaultcategory = core_course_category::get_default()->id;
 } else {
+    require_once($CFG->libdir . '/coursecatlib.php');
     $defaultcategory = coursecat::get_default()->id;
 }
 

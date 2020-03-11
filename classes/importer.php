@@ -35,47 +35,47 @@ class tool_uploadpage_importer {
     /**
      * @var string $error   Last error message.
      */
-    protected $error = '';
+    public $error = '';
 
     /**
      * @var array $records   The records to process.
      */
-    protected $records = array();
+    public $records = array();
 
     /**
      * @var int $importid   The import id.
      */
-    protected $importid = 0;
+    public $importid = 0;
 
     /**
      * @var object $importer   The importer object.
      */
-    protected $importer = null;
+    public $importer = null;
 
     /**
      * @var array $foundheaders   The headers found in the import file.
      */
-    protected $foundheaders = array();
+    public $foundheaders = array();
 
     /**
      * @var object $generator   The generator used for creating the courses and activities.
      */
-    protected $generator = null;
+    public $generator = null;
 
     /**
      * @var array $errors   The array of all errors identified.
      */
-    protected $errors = array();
+    public $errors = array();
 
     /**
      * @var int $error   The current line number we are processing.
      */
-    protected $linenb = 0;
+    public $linenb = 0;
 
     /**
      * @var bool $processstarted   Indicates if we have started processing.
      */
-    protected $processstarted = false;
+    public $processstarted = false;
 
     /**
      * Return a Failure

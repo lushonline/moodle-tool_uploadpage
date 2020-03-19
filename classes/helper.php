@@ -25,6 +25,10 @@
  */
 defined('MOODLE_INTERNAL') || die;
 
+global $CFG;
+require_once($CFG->libdir . '/completionlib.php');
+require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
+
 /**
  * Class containing a set of helpers.
  *
@@ -182,6 +186,9 @@ class tool_uploadpage_helper {
 
         $course->category = self::get_or_create_category_from_import_record($record);
 
+        // Add completion flags.
+        $course->enablecompletion = 1;
+
         return $course;
     }
 
@@ -234,6 +241,9 @@ class tool_uploadpage_helper {
         $page->intro = $record->page_intro;
         $page->content = $record->page_content;
         $page->contentformat = 1; // FORMAT_HTML.
+
+        $page->completion = 2;
+        $page->completionview = 1;
 
         return $page;
     }
@@ -339,5 +349,46 @@ class tool_uploadpage_helper {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Update the course completion criteria to use the Activity Completion
+     *
+     * @param object $course Course Object
+     * @param object $cm Course Module Object for the Single Page
+     * @return void
+     */
+    public static function update_course_completion_criteria($course, $cm) {
+        // Criteria for course.
+        $criteriadata = new stdClass();
+        $criteriadata->id = $course->id;
+        $criteriadata->criteria_activity = array($cm->id => 1);
+
+        $criterion = new completion_criteria_activity();
+        $criterion->update_config($criteriadata);
+
+        // Handle overall aggregation.
+        $aggdata = array(
+            'course'        => $course->id,
+            'criteriatype'  => null
+        );
+        $aggregation = new completion_aggregation($aggdata);
+        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
+        $aggregation->save();
+
+        $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_ACTIVITY;
+        $aggregation = new completion_aggregation($aggdata);
+        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
+        $aggregation->save();
+
+        $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_COURSE;
+        $aggregation = new completion_aggregation($aggdata);
+        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
+        $aggregation->save();
+
+        $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_ROLE;
+        $aggregation = new completion_aggregation($aggdata);
+        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
+        $aggregation->save();
     }
 }

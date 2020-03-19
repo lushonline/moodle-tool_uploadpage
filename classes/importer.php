@@ -374,6 +374,8 @@ class tool_uploadpage_importer {
                             $cm->idnumber = $mergedcourse->idnumber;
                             $DB->update_record('course_modules', $cm);
                             $status = array("Course Updated - Page Activity Added");
+                            tool_uploadpage_helper::update_course_completion_criteria($course, $cm);
+
                         }
 
                         if ($updatepage) {
@@ -382,6 +384,8 @@ class tool_uploadpage_importer {
                             $cm->idnumber = $course->idnumber;
                             $DB->update_record('course_modules', $cm);
                             $status = array("Course Updated - Page Activity Updated");
+                            tool_uploadpage_helper::update_course_completion_criteria($course, $cm);
+
                         }
                         $tracker->output($this->linenb, true, $status, $mergedcourse);
                     }
@@ -398,6 +402,8 @@ class tool_uploadpage_importer {
                     $cm = get_coursemodule_from_instance('page', $pagerecord->id);
                     $cm->idnumber = $course->idnumber;
                     $DB->update_record('course_modules', $cm);
+
+                    tool_uploadpage_helper::update_course_completion_criteria($newcourse, $cm);
 
                     $tracker->output($this->linenb, true, $status, $newcourse);
                 }

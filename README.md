@@ -33,3 +33,6 @@ This plugin requires no configuration.
 
 ## Usage
 For more information see the [Wiki Pages](https://github.com/lushonline/moodle-tool_uploadpage/wiki)
+
+## Acknowledgements
+This was inspired in part by the great work of Frédéric Massart and Piers harding on the core [admin\tool\uploadcourse](https://github.com/moodle/moodle/tree/master/admin/tool/uploadcourse)

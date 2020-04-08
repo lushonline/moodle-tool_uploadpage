@@ -138,7 +138,8 @@ class tool_uploadpage_helper {
 
         if (count($courses) == 1) {
             $course = array_pop($courses);
-            $tags = core_tag_tag::get_item_tags_array('core', 'course', $course->id);
+            $tags = core_tag_tag::get_item_tags_array('core', 'course', $course->id,
+                                        core_tag_tag::BOTH_STANDARD_AND_NOT, 0, false);
 
             $course->tags = array();
 

@@ -359,12 +359,17 @@ class tool_uploadpage_helper {
      * @return void
      */
     public static function update_course_completion_criteria($course, $cm) {
+        $criterion = new completion_criteria_activity();
+
+        $params = array('id' => $course->id, 'criteria_activity' => array($cm->id => 1));
+        if ($currentcriteria = $criterion->fetch($params)) {
+            return;
+        }
+
         // Criteria for course.
-        $criteriadata = new stdClass();
+        $criteriadata = new \stdClass();
         $criteriadata->id = $course->id;
         $criteriadata->criteria_activity = array($cm->id => 1);
-
-        $criterion = new completion_criteria_activity();
         $criterion->update_config($criteriadata);
 
         // Handle overall aggregation.

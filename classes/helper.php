@@ -49,6 +49,9 @@ class tool_uploadpage_helper {
         // course idnumber.
         // course shortname.
         // course longname.
+        // page name.
+        // page intro.
+        // page content.
 
         if (empty($record->course_idnumber)) {
             return false;
@@ -59,6 +62,18 @@ class tool_uploadpage_helper {
         }
 
         if (empty($record->course_fullname)) {
+            return false;
+        }
+
+        if (empty($record->page_name)) {
+            return false;
+        }
+
+        if (empty($record->page_intro)) {
+            return false;
+        }
+
+        if (empty($record->page_content)) {
             return false;
         }
         return true;

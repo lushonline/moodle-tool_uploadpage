@@ -20,3 +20,4 @@ Feature: An admin can update a single page activity course using a CSV file
     And I should see "Courses updated: 1"
     And I am on site homepage
     And I should see "C1b49aa30-e719-11e6-9835-f723b46a2688 Full Name Updated"
+    

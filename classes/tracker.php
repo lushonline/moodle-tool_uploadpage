@@ -87,46 +87,6 @@ class tool_uploadpage_tracker {
     }
 
     /**
-     * Output the results.
-     *
-     * @param int $total total courses.
-     * @param int $created count of courses created.
-     * @param int $updated count of courses updated.
-     * @param int $deleted count of courses deleted.
-     * @param int $nochange count of courses unchanged.
-     * @param int $errors count of errors.
-     * @return void
-     */
-    public function results($total, $created, $updated, $deleted, $nochange, $errors) {
-        if ($this->outputmode == self::NO_OUTPUT) {
-            return;
-        }
-
-        $message = array(
-            get_string('coursestotal', 'tool_uploadpage', $total),
-            get_string('coursescreated', 'tool_uploadpage', $created),
-            get_string('coursesupdated', 'tool_uploadpage', $updated),
-            get_string('coursesdeleted', 'tool_uploadpage', $deleted),
-            get_string('coursesnotupdated', 'tool_uploadpage', $nochange),
-            get_string('courseserrors', 'tool_uploadpage', $errors)
-        );
-
-        if ($this->outputmode == self::OUTPUT_PLAIN) {
-            foreach ($message as $msg) {
-                $this->buffer->output($msg);
-            }
-        }
-
-        if ($this->outputmode == self::OUTPUT_HTML) {
-            $buffer = new progress_trace_buffer(new html_list_progress_trace());
-            foreach ($message as $msg) {
-                $buffer->output($msg);
-            }
-            $buffer->finished();
-        }
-    }
-
-    /**
      * Get the outcome indicator
      *
      * @param bool $outcome success or not?
@@ -154,7 +114,7 @@ class tool_uploadpage_tracker {
      */
     private function writehtmltablecell($message, $column) {
         $this->buffer->output(html_writer::tag('td',
-            $message,
+            htmlspecialchars($message),
             array('class' => 'c' . $column)
         ));
     }
@@ -168,7 +128,7 @@ class tool_uploadpage_tracker {
      */
     private function writehtmltableheader($message, $column) {
         $this->buffer->output(html_writer::tag('th',
-            $message,
+            htmlspecialchars($message),
             array('class' => 'c' . $column,
             'scope' => 'col'
             )
@@ -194,6 +154,35 @@ class tool_uploadpage_tracker {
      */
     private function writehtmltablerowend() {
         $this->buffer->output(html_writer::end_tag('tr'));
+    }
+
+    /**
+     * Write a HTML list start
+     *
+     * @param int $row
+     * @return void
+     */
+    private function writehtmlliststart() {
+        $this->buffer->output(html_writer::start_tag('ul'));
+    }
+
+    /**
+     * Write a HTML list item
+     *
+     * @param object $message
+     * @return void
+     */
+    private function writehtmllistitem($message) {
+        $this->buffer->output(html_writer::tag('li', htmlspecialchars($message)));
+    }
+
+    /**
+     * Write a HTML list close
+     *
+     * @return void
+     */
+    private function writehtmllistend() {
+        $this->buffer->output(html_writer::end_tag('ul'));
     }
 
     /**
@@ -304,6 +293,46 @@ class tool_uploadpage_tracker {
 
         if ($this->outputmode == self::OUTPUT_HTML) {
             $this->writehtmltableend();
+        }
+    }
+
+    /**
+     * Output the results.
+     *
+     * @param int $total total courses.
+     * @param int $created count of courses created.
+     * @param int $updated count of courses updated.
+     * @param int $deleted count of courses deleted.
+     * @param int $nochange count of courses unchanged.
+     * @param int $errors count of errors.
+     * @return void
+     */
+    public function results($total, $created, $updated, $deleted, $nochange, $errors) {
+        if ($this->outputmode == self::NO_OUTPUT) {
+            return;
+        }
+
+        $message = array(
+            get_string('coursestotal', 'tool_uploadpage', $total),
+            get_string('coursescreated', 'tool_uploadpage', $created),
+            get_string('coursesupdated', 'tool_uploadpage', $updated),
+            get_string('coursesdeleted', 'tool_uploadpage', $deleted),
+            get_string('coursesnotupdated', 'tool_uploadpage', $nochange),
+            get_string('courseserrors', 'tool_uploadpage', $errors)
+        );
+
+        if ($this->outputmode == self::OUTPUT_PLAIN) {
+            foreach ($message as $msg) {
+                $this->buffer->output($msg);
+            }
+        }
+
+        if ($this->outputmode == self::OUTPUT_HTML) {
+            $this->writehtmlliststart();
+            foreach ($message as $msg) {
+                $this->writehtmllistitem($msg);
+            }
+            $this->writehtmllistend();
         }
     }
 

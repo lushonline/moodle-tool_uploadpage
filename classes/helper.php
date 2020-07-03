@@ -232,97 +232,51 @@ class tool_uploadpage_helper {
     }
 
     /**
-     * Merge changes from $importedcourse into $existingcourse
+     * Merge changes from $imported into $existing
      *
-     * @param object $existingcourse Course Record for existing course
-     * @param object $importedcourse  Course Record for imported course
+     * @param object $existing Course Record for existing course
+     * @param object $imported  Course Record for imported course
      * @return object course or FALSE if no changes
      */
-    public static function update_course_with_import_course($existingcourse, $importedcourse) {
-        $updateneeded = false;
-        $result = $existingcourse;
-        $updates = array();
+    public static function update_course_with_import_course($existing, $imported) {
+        // Sort the tags arrays.
+        sort($existing->tags);
+        sort($imported->tags);
 
-        if ($existingcourse->fullname !== $importedcourse->fullname) {
-            array_push($updates, "fullname is different");
-            $result->fullname = $importedcourse->fullname;
-            $updateneeded = true;
-        }
-
-        if ($existingcourse->shortname !== $importedcourse->shortname) {
-            array_push($updates, "shortname is different");
-            $result->shortname = $importedcourse->shortname;
-            $updateneeded = true;
-        }
-
-        if ($existingcourse->idnumber !== $importedcourse->idnumber) {
-            array_push($updates, "idnumber is different");
-            $result->idnumber = $importedcourse->idnumber;
-            $updateneeded = true;
-        }
+        $result = $existing;
+        $result->fullname = $imported->fullname;
+        $result->shortname = $imported->shortname;
+        $result->idnumber = $imported->idnumber;
+        $result->visible = $imported->visible;
+        $result->tags = $imported->tags;
+        $result->category = $imported->category;
 
         // We need to apply Moodle FORMAT_HTML conversion as this is how summary would have been stored.
-        if ($existingcourse->summary !== format_text($importedcourse->summary, FORMAT_HTML, array('filter' => false))) {
-            array_push($updates, "summary is different");
-            $result->summary = $importedcourse->summary;
-            $updateneeded = true;
+        if ($existing->summary !== format_text($imported->summary, FORMAT_HTML, array('filter' => false))) {
+            $result->summary = $imported->summary;
         }
 
-        if ($existingcourse->visible !== $importedcourse->visible) {
-            array_push($updates, "visible is different");
-            $result->visible = $importedcourse->visible;
-            $updateneeded = true;
-        }
-
-        // Sort the arrays and then compare.
-        sort($existingcourse->tags);
-        sort($importedcourse->tags);
-
-        if ($existingcourse->tags !== $importedcourse->tags) {
-            array_push($updates, "tags is different");
-            $result->tags = $importedcourse->tags;
-            $updateneeded = true;
-        }
-
-        if ($existingcourse->category !== $importedcourse->category) {
-            array_push($updates, "category is different");
-            $result->category = $importedcourse->category;
-            $updateneeded = true;
-        }
-
-        if ($updateneeded) {
+        if ($result !== $existing) {
             return $result;
         }
         return false;
     }
 
     /**
-     * Merge changes from $importedpage into $existingpage
+     * Merge changes from $imported into $existing
      *
-     * @param object $existingpage Page Record for existing page
-     * @param object $importedpage  page Record for imported page
+     * @param object $existing Page Record for existing page
+     * @param object $importede  page Record for imported page
      * @return object page or FALSE if no changes
      */
-    public static function update_page_with_import_page($existingpage, $importedpage) {
-        $updateneeded = false;
-        $result = $existingpage;
+    public static function update_page_with_import_page($existing, $imported) {
+        $result = $existing;
 
-        if ($existingpage->name !== $importedpage->name) {
-            $result->name = $importedpage->name;
-            $updateneeded = true;
-        }
+        $result->name = $imported->name;
+        $result->intro = $imported->intro;
+        $result->content = $imported->content;
 
-        if ($existingpage->intro !== $importedpage->intro) {
-            $result->intro = $importedpage->intro;
-            $updateneeded = true;
-        }
-
-        if ($existingpage->content !== $importedpage->content) {
-            $result->content = $importedpage->content;
-            $updateneeded = true;
-        }
-
-        if ($updateneeded) {
+        if ($result !== $existing) {
             return $result;
         }
         return false;

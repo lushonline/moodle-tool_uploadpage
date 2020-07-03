@@ -196,15 +196,15 @@ class tool_uploadpage_tracker {
             if (is_array($status)) {
                 $status = implode(html_writer::empty_tag('br'), $status);
             }
-            $this->buffer->output(html_writer::start_tag('tr', array('class' => 'r' . $this->rownb % 2));
-            $this->buffer->output(html_writer::tag('td', $message[0], array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::tag('td', $message[1], array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::tag('td', $message[2], array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::tag('td', $message[3], array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::tag('td', $message[4], array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::tag('td', $message[5], array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::tag('td', $status, array('class' => 'c' . $ci++));
-            $this->buffer->output(html_writer::end_tag('tr');
+            $this->buffer->output(html_writer::start_tag('tr', array('class' => 'r' . $this->rownb % 2)));
+            $this->buffer->output(html_writer::tag('td', $message[0], array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::tag('td', $message[1], array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::tag('td', $message[2], array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::tag('td', $message[3], array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::tag('td', $message[4], array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::tag('td', $message[5], array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::tag('td', $status, array('class' => 'c' . $ci++)));
+            $this->buffer->output(html_writer::end_tag('tr'));
         }
     }
 

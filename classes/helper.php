@@ -53,30 +53,15 @@ class tool_uploadpage_helper {
         // page intro.
         // page content.
 
-        if (empty($record->course_idnumber)) {
-            return false;
-        }
+        $isvalid = true;
+        $isvalid = $isvalid && !empty($record->course_idnumber);
+        $isvalid = $isvalid && !empty($record->course_shortname);
+        $isvalid = $isvalid && !empty($record->course_fullname);
+        $isvalid = $isvalid && !empty($record->page_name);
+        $isvalid = $isvalid && !empty($record->page_intro);
+        $isvalid = $isvalid && !empty($record->page_content);
 
-        if (empty($record->course_shortname)) {
-            return false;
-        }
-
-        if (empty($record->course_fullname)) {
-            return false;
-        }
-
-        if (empty($record->page_name)) {
-            return false;
-        }
-
-        if (empty($record->page_intro)) {
-            return false;
-        }
-
-        if (empty($record->page_content)) {
-            return false;
-        }
-        return true;
+        return $isvalid;
     }
 
     /**
@@ -105,17 +90,16 @@ class tool_uploadpage_helper {
         if (is_numeric($id)) {
             if ($DB->record_exists('course_categories', $params)) {
                 return $id;
-            } else {
-                return null;
             }
-        } else {
-            $params = array('idnumber' => $id);
-            try {
-                $id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, MUST_EXIST);
-                return $id;
-            } catch (Exception $e) {
-                return null;
-            }
+            return null;
+        }
+
+        $params = array('idnumber' => $id);
+        try {
+            $id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, MUST_EXIST);
+            return $id;
+        } catch (Exception $e) {
+            return null;
         }
     }
 
@@ -130,13 +114,7 @@ class tool_uploadpage_helper {
         global $DB;
 
         $params = array('name' => $name, 'course' => $courseid);
-        $pages = $DB->get_records('page', $params);
-
-        if (count($pages) != 0) {
-             return array_pop($pages);
-        } else {
-             return null;
-        }
+        return $DB->get_record('page', $params);
     }
 
     /**
@@ -149,23 +127,15 @@ class tool_uploadpage_helper {
         global $DB;
 
         $params = array('idnumber' => $courseidnumber);
-        $courses = $DB->get_records('course', $params);
-
-        if (count($courses) == 1) {
-            $course = array_pop($courses);
+        if ($course = $DB->get_record('course', $params)) {;
             $tags = core_tag_tag::get_item_tags_array('core', 'course', $course->id,
                                         core_tag_tag::BOTH_STANDARD_AND_NOT, 0, false);
-
             $course->tags = array();
-
             foreach ($tags as $value) {
                 array_push($course->tags, $value);
             }
-
-            return $course;
-        } else {
-            return null;
         }
+        return $course;
     }
 
     /**
@@ -184,11 +154,10 @@ class tool_uploadpage_helper {
         $course->summaryformat = 1; // FORMAT_HTML.
         $course->visible = $record->course_visible;
 
+        $course->tags = array();
         // Split the tag string into an array.
         if (!empty($record->course_tags)) {
             $course->tags = explode($tagdelimiter, $record->course_tags);
-        } else {
-            $course->tags = array();
         }
 
         // Fixed default values.
@@ -219,9 +188,7 @@ class tool_uploadpage_helper {
         $categoryid = $record->category;
 
         if (!empty($record->course_categoryidnumber)) {
-            $categoryid = self::resolve_category_by_idnumber($record->course_categoryidnumber);
-            if ($categoryid === false) {
-
+            if (!$categoryid = self::resolve_category_by_idnumber($record->course_categoryidnumber)) {
                 if (!empty($record->course_categoryname)) {
                     // Category not found and we have a name so we need to create.
                     $category = new \stdClass();
@@ -295,11 +262,7 @@ class tool_uploadpage_helper {
         }
 
         // We need to apply Moodle FORMAT_HTML conversion as this is how summary would have been stored.
-        $options = array();
-        $options['filter'] = false;
-        $formatted = format_text($importedcourse->summary, FORMAT_HTML, $options);
-
-        if ($existingcourse->summary !== $formatted) {
+        if ($existingcourse->summary !== format_text($importedcourse->summary, FORMAT_HTML, array('filter' => false))) {
             array_push($updates, "summary is different");
             $result->summary = $importedcourse->summary;
             $updateneeded = true;
@@ -329,9 +292,8 @@ class tool_uploadpage_helper {
 
         if ($updateneeded) {
             return $result;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -362,9 +324,8 @@ class tool_uploadpage_helper {
 
         if ($updateneeded) {
             return $result;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -391,25 +352,23 @@ class tool_uploadpage_helper {
         // Handle overall aggregation.
         $aggdata = array(
             'course'        => $course->id,
-            'criteriatype'  => null
+            'criteriatype'  => null,
+            'method' => COMPLETION_AGGREGATION_ALL
         );
+
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
 
         $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_ACTIVITY;
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
 
         $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_COURSE;
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
 
         $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_ROLE;
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
     }
 }

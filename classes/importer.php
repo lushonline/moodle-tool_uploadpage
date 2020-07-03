@@ -198,6 +198,36 @@ class tool_uploadpage_importer {
     }
 
     /**
+     *
+     * Start a new CSV importer, and return true if successful
+     *
+     * @param string $text
+     * @param string $encoding
+     * @param string $delimiter
+     * @param string $type
+     * @return bool
+     */
+    private function startcsvimporter(
+                                    $text = null,
+                                    $encoding = null,
+                                    $delimiter = 'comma',
+                                    $type = 'csvimport' ) {
+        if ($text === null) {
+            return false;
+        }
+        $this->importid = csv_import_reader::get_new_iid($type);
+        $this->importer = new csv_import_reader($this->importid, $type);
+
+        if (!$this->importer->load_csv_content($text, $encoding, $delimiter)) {
+            $this->importer->cleanup();
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
      * Constructor
      *
      * @param string $text
@@ -211,42 +241,31 @@ class tool_uploadpage_importer {
                                 $category=1, $importid = 0, $mappingdata = null) {
         global $CFG;
         require_once($CFG->libdir . '/csvlib.class.php');
-
         $type = 'singlepagecourse';
+        $this->importid = $importid;
 
-        if (!$importid) {
-            if ($text === null) {
-                return;
-            }
-              $this->importid = csv_import_reader::get_new_iid($type);
-
-              $this->importer = new csv_import_reader($this->importid, $type);
-
-            if (!$this->importer->load_csv_content($text, $encoding, $delimiter)) {
+        if (!$this->importid) {
+            if (!$this->startcsvimporter($text, $encoding, $delimiter, $type)) {
                 $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
-                $this->importer->cleanup();
                 return;
             }
         } else {
-               $this->importid = $importid;
-               $this->importer = new csv_import_reader($this->importid, $type);
+            $this->importer = new csv_import_reader($this->importid, $type);
         }
 
         if (!$this->importer->init()) {
-               $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
-               $this->importer->cleanup();
-               return;
+            $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
+            $this->importer->cleanup();
+            return;
         }
 
-        if ($category != 1) {
-              $categorycheck = tool_uploadpage_helper::resolve_category_by_id_or_idnumber($category);
-            if ($categorycheck == null) {
-                $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
-                $this->importer->cleanup();
-                return;
-            } else {
-                $category = $categorycheck;
-            }
+        $categorycheck = tool_uploadpage_helper::resolve_category_by_id_or_idnumber($category);
+        if ($categorycheck == null) {
+            $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
+            $this->importer->cleanup();
+            return;
+        } else {
+            $category = $categorycheck;
         }
 
         $this->foundheaders = $this->importer->get_columns();
@@ -260,32 +279,32 @@ class tool_uploadpage_importer {
         $records = array();
 
         while ($row = $this->importer->next()) {
-              $mapping = $this->read_mapping_data($mappingdata);
+            $mapping = $this->read_mapping_data($mappingdata);
 
-              $record = new \stdClass();
-              $record->course_idnumber = $this->get_row_data($row, $mapping['course_idnumber']);
-              $record->course_shortname = $this->get_row_data($row, $mapping['course_shortname']);
-              $record->course_fullname = $this->get_row_data($row, $mapping['course_fullname']);
-              $record->course_summary = $this->get_row_data($row, $mapping['course_summary']);
-              $record->course_tags = $this->get_row_data($row, $mapping['course_tags']);
-              $record->course_visible = $this->get_row_data($row, $mapping['course_visible']);
-              $record->course_categoryidnumber = $this->get_row_data($row, $mapping['course_categoryidnumber']);
-              $record->course_categoryname = $this->get_row_data($row, $mapping['course_categoryname']);
-              $record->page_name = $this->get_row_data($row, $mapping['page_name']);
-              $record->page_intro = $this->get_row_data($row, $mapping['page_intro']);
-              $record->page_content = $this->get_row_data($row, $mapping['page_content']);
+            $record = new \stdClass();
+            $record->course_idnumber = $this->get_row_data($row, $mapping['course_idnumber']);
+            $record->course_shortname = $this->get_row_data($row, $mapping['course_shortname']);
+            $record->course_fullname = $this->get_row_data($row, $mapping['course_fullname']);
+            $record->course_summary = $this->get_row_data($row, $mapping['course_summary']);
+            $record->course_tags = $this->get_row_data($row, $mapping['course_tags']);
+            $record->course_visible = $this->get_row_data($row, $mapping['course_visible']);
+            $record->course_categoryidnumber = $this->get_row_data($row, $mapping['course_categoryidnumber']);
+            $record->course_categoryname = $this->get_row_data($row, $mapping['course_categoryname']);
+            $record->page_name = $this->get_row_data($row, $mapping['page_name']);
+            $record->page_intro = $this->get_row_data($row, $mapping['page_intro']);
+            $record->page_content = $this->get_row_data($row, $mapping['page_content']);
 
-              $record->category = $category;
+            $record->category = $category;
 
-              array_push($records, $record);
+            array_push($records, $record);
         }
 
         $this->records = $records;
-
         $this->importer->close();
+
         if ($this->records == null) {
-               $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
-               return;
+            $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
+            return;
         }
     }
 
@@ -361,13 +380,13 @@ class tool_uploadpage_importer {
 
                     if ($existingpage) {
                         $mergedpage = tool_uploadpage_helper::update_page_with_import_page($existingpage, $page);
+                        $addpage = false;
+                        $updatepage = true;
+
                         if ($mergedpage === false) {
                             $updatepage = false;
                             $addpage = false;
                             $mergedpage = $page;
-                        } else {
-                            $addpage = false;
-                            $updatepage = true;
                         }
                     } else {
                         $page->course = $existing->id;

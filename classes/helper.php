@@ -158,7 +158,7 @@ class tool_uploadpage_helper {
 
             $course->tags = array();
 
-            foreach ($tags as $key => $value) {
+            foreach ($tags as $value) {
                 array_push($course->tags, $value);
             }
 
@@ -378,7 +378,7 @@ class tool_uploadpage_helper {
         $criterion = new completion_criteria_activity();
 
         $params = array('id' => $course->id, 'criteria_activity' => array($cm->id => 1));
-        if ($currentcriteria = $criterion->fetch($params)) {
+        if ($criterion->fetch($params)) {
             return;
         }
 

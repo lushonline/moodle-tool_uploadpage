@@ -159,7 +159,6 @@ class tool_uploadpage_tracker {
     /**
      * Write a HTML list start
      *
-     * @param int $row
      * @return void
      */
     private function writehtmlliststart() {

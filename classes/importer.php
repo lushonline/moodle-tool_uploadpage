@@ -251,6 +251,7 @@ class tool_uploadpage_importer {
 
         $this->foundheaders = $this->importer->get_columns();
         if (!$this->validateheaders()) {
+            $this->fail(get_string('invalidimportfile', 'tool_uploadpage'));
             $this->importer->cleanup();
             return;
         }
@@ -439,5 +440,6 @@ class tool_uploadpage_importer {
 
         $tracker->finish();
         $tracker->results($total, $created, $updated, $deleted, $nochange, $errors);
+        return $tracker->get_buffer();
     }
 }

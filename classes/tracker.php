@@ -72,11 +72,16 @@ class tool_uploadpage_tracker {
      * Constructor.
      *
      * @param int $outputmode desired output mode.
+     * @param object $passthrough do we print output as well as buffering it.
+     *
      */
-    public function __construct($outputmode = self::NO_OUTPUT) {
+    public function __construct($outputmode = self::NO_OUTPUT, $passthrough = null) {
         $this->outputmode = $outputmode;
         if ($this->outputmode == self::OUTPUT_PLAIN) {
-            $this->buffer = new progress_trace_buffer(new text_progress_trace());
+            $this->buffer = new progress_trace_buffer(new text_progress_trace(), $passthrough);
+        }
+        if ($this->outputmode == self::OUTPUT_HTML) {
+            $this->buffer = new progress_trace_buffer(new text_progress_trace(), $passthrough);
         }
     }
 
@@ -134,6 +139,25 @@ class tool_uploadpage_tracker {
     }
 
     /**
+     * Get the outcome indicator
+     *
+     * @param bool $outcome success or not?
+     * @return object
+     */
+    private function getoutcomeindicator($outcome) {
+        global $OUTPUT;
+
+        switch ($this->outputmode) {
+            case self::OUTPUT_PLAIN:
+                return $outcome ? 'OK' : 'NOK';
+            case self::OUTPUT_HTML:
+                return $outcome ? $OUTPUT->pix_icon('i/valid', '') : $OUTPUT->pix_icon('i/invalid', '');
+            default:
+               return;
+        }
+    }
+
+    /**
      * Output one more line.
      *
      * @param int $line line number.
@@ -143,44 +167,39 @@ class tool_uploadpage_tracker {
      * @return void
      */
     public function output($line, $outcome, $status, $data) {
-        global $OUTPUT;
         if ($this->outputmode == self::NO_OUTPUT) {
             return;
         }
 
+        $message = array(
+            $line,
+            self::getoutcomeindicator($outcome),
+            isset($data->id) ? $data->id : '',
+            isset($data->shortname) ? $data->shortname : '',
+            isset($data->fullname) ? $data->fullname : '',
+            isset($data->idnumber) ? $data->idnumber : ''
+        );
+
         if ($this->outputmode == self::OUTPUT_PLAIN) {
-            $message = array(
-                $line,
-                $outcome ? 'OK' : 'NOK',
-                isset($data->id) ? $data->id : '',
-                isset($data->shortname) ? $data->shortname : '',
-                isset($data->fullname) ? $data->fullname : '',
-                isset($data->idnumber) ? $data->idnumber : ''
-            );
             $this->buffer->output(implode("\t", $message));
-            if (!empty($status)) {
-                foreach ($status as $st) {
-                    $this->buffer->output($st, 1);
-                }
+            if (is_array($status)) {
+                $this->buffer->output(implode("\t  ", $status));
             }
-        } else if ($this->outputmode == self::OUTPUT_HTML) {
+        }
+
+        if ($this->outputmode == self::OUTPUT_HTML) {
             $ci = 0;
             $this->rownb++;
             if (is_array($status)) {
                 $status = implode(html_writer::empty_tag('br'), $status);
             }
-            if ($outcome) {
-                $outcome = $OUTPUT->pix_icon('i/valid', '');
-            } else {
-                $outcome = $OUTPUT->pix_icon('i/invalid', '');
-            }
             echo html_writer::start_tag('tr', array('class' => 'r' . $this->rownb % 2));
-            echo html_writer::tag('td', $line, array('class' => 'c' . $ci++));
-            echo html_writer::tag('td', $outcome, array('class' => 'c' . $ci++));
-            echo html_writer::tag('td', isset($data->id) ? $data->id : '', array('class' => 'c' . $ci++));
-            echo html_writer::tag('td', isset($data->shortname) ? $data->shortname : '', array('class' => 'c' . $ci++));
-            echo html_writer::tag('td', isset($data->fullname) ? $data->fullname : '', array('class' => 'c' . $ci++));
-            echo html_writer::tag('td', isset($data->idnumber) ? $data->idnumber : '', array('class' => 'c' . $ci++));
+            echo html_writer::tag('td', $message[0], array('class' => 'c' . $ci++));
+            echo html_writer::tag('td', $message[1], array('class' => 'c' . $ci++));
+            echo html_writer::tag('td', $message[2], array('class' => 'c' . $ci++));
+            echo html_writer::tag('td', $message[3], array('class' => 'c' . $ci++));
+            echo html_writer::tag('td', $message[4], array('class' => 'c' . $ci++));
+            echo html_writer::tag('td', $message[5], array('class' => 'c' . $ci++));
             echo html_writer::tag('td', $status, array('class' => 'c' . $ci++));
             echo html_writer::end_tag('tr');
         }
@@ -216,6 +235,17 @@ class tool_uploadpage_tracker {
             echo html_writer::tag('th', get_string('status'), array('class' => 'c' . $ci++, 'scope' => 'col'));
             echo html_writer::end_tag('tr');
         }
+    }
+
+    /**
+     * Return text buffer.
+     * @return string buffered plain text
+     */
+    public function get_buffer() {
+        if ($this->outputmode == self::NO_OUTPUT) {
+            return "";
+        }
+        return $this->buffer->get_buffer();
     }
 
 }

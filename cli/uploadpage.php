@@ -115,4 +115,4 @@ if ($error) {
 }
 
 $importer = new tool_uploadpage_importer(null, null, null, $options['categoryid'], $importid, null);
-$importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_PLAIN));
+$importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_PLAIN, true));

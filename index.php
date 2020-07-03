@@ -83,9 +83,12 @@ if ($form2data = $mform2->is_cancelled()) {
     if ($error) {
         redirect($returnurl);
     } else {
+        $processingresponse = $importer->execute(new tool_uploadpage_tracker(
+            tool_uploadpage_tracker::OUTPUT_HTML, false)
+        );
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('uploadpageresult', 'tool_uploadpage'));
-        $records = $importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_HTML));
+        echo $processingresponse;
         echo $OUTPUT->continue_button($url);
     }
 } else {

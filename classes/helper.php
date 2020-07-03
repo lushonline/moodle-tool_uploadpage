@@ -256,7 +256,7 @@ class tool_uploadpage_helper {
             $result->summary = $imported->summary;
         }
 
-        if ($result !== $existing) {
+        if ($result != $existing) {
             return $result;
         }
         return false;
@@ -276,7 +276,7 @@ class tool_uploadpage_helper {
         $result->intro = $imported->intro;
         $result->content = $imported->content;
 
-        if ($result !== $existing) {
+        if ($result != $existing) {
             return $result;
         }
         return false;

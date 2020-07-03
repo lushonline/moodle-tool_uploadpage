@@ -235,7 +235,7 @@ class tool_uploadpage_helper {
      * Merge changes from $imported into $existing
      *
      * @param object $existing Course Record for existing course
-     * @param object $imported Course Record for imported course
+     * @param object $imported  Course Record for imported course
      * @return object course or FALSE if no changes
      */
     public static function update_course_with_import_course($existing, $imported) {
@@ -243,7 +243,7 @@ class tool_uploadpage_helper {
         sort($existing->tags);
         sort($imported->tags);
 
-        $result = $existing;
+        $result = clone $existing;
         $result->fullname = $imported->fullname;
         $result->shortname = $imported->shortname;
         $result->idnumber = $imported->idnumber;
@@ -266,11 +266,11 @@ class tool_uploadpage_helper {
      * Merge changes from $imported into $existing
      *
      * @param object $existing Page Record for existing page
-     * @param object $imported  page Record for imported page
+     * @param object $importede  page Record for imported page
      * @return object page or FALSE if no changes
      */
     public static function update_page_with_import_page($existing, $imported) {
-        $result = $existing;
+        $result = clone $existing;
 
         $result->name = $imported->name;
         $result->intro = $imported->intro;

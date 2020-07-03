@@ -114,7 +114,7 @@ class tool_uploadpage_tracker {
      */
     private function writehtmltablecell($message, $column) {
         $this->buffer->output(html_writer::tag('td',
-            htmlspecialchars($message),
+            $message,
             array('class' => 'c' . $column)
         ));
     }
@@ -128,7 +128,7 @@ class tool_uploadpage_tracker {
      */
     private function writehtmltableheader($message, $column) {
         $this->buffer->output(html_writer::tag('th',
-            htmlspecialchars($message),
+            $message,
             array('class' => 'c' . $column,
             'scope' => 'col'
             )
@@ -173,7 +173,7 @@ class tool_uploadpage_tracker {
      * @return void
      */
     private function writehtmllistitem($message) {
-        $this->buffer->output(html_writer::tag('li', htmlspecialchars($message)));
+        $this->buffer->output(html_writer::tag('li', $message));
     }
 
     /**

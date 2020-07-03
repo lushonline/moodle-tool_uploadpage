@@ -208,6 +208,11 @@ class tool_uploadpage_tracker {
         'summary' => $summary)));
     }
 
+    /**
+     * Write a HTML table end
+     *
+     * @return void
+     */
     private function writehtmltableend() {
         $this->buffer->output(html_writer::end_tag('table'));
     }
@@ -276,13 +281,13 @@ class tool_uploadpage_tracker {
             $ci = 0;
             $this->writehtmltablestart(get_string('uploadpageresult', 'tool_uploadpage'));
             $this->writehtmltablerowstart(0);
-            $this->writehtmltableheader(get_string('csvline', 'tool_uploadpage'), $c++);
-            $this->writehtmltableheader(get_string('result', 'tool_uploadpage'), $c++);
-            $this->writehtmltableheader(get_string('id', 'tool_uploadpage'), $c++);
-            $this->writehtmltableheader(get_string('shortname'), $c++);
-            $this->writehtmltableheader(get_string('fullname'), $c++);
-            $this->writehtmltableheader(get_string('idnumber'), $c++);
-            $this->writehtmltableheader(get_string('status'), $c++);
+            $this->writehtmltableheader(get_string('csvline', 'tool_uploadpage'), $ci++);
+            $this->writehtmltableheader(get_string('result', 'tool_uploadpage'), $ci++);
+            $this->writehtmltableheader(get_string('id', 'tool_uploadpage'), $ci++);
+            $this->writehtmltableheader(get_string('shortname'), $ci++);
+            $this->writehtmltableheader(get_string('fullname'), $ci++);
+            $this->writehtmltableheader(get_string('idnumber'), $ci++);
+            $this->writehtmltableheader(get_string('status'), $ci++);
             $this->writehtmltablerowend();
         }
     }

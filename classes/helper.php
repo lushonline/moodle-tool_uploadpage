@@ -127,7 +127,7 @@ class tool_uploadpage_helper {
         global $DB;
 
         $params = array('idnumber' => $courseidnumber);
-        if ($course = $DB->get_record('course', $params)) {;
+        if ($course = $DB->get_record('course', $params)) {
             $tags = core_tag_tag::get_item_tags_array('core', 'course', $course->id,
                                         core_tag_tag::BOTH_STANDARD_AND_NOT, 0, false);
             $course->tags = array();

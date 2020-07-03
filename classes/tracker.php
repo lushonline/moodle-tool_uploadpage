@@ -193,7 +193,7 @@ class tool_uploadpage_tracker {
      * @return void
      */
     private function writehtmltablerowend() {
-        $this->buffer->output(html_writer::end_tag('tr');
+        $this->buffer->output(html_writer::end_tag('tr'));
     }
 
     /**
@@ -244,12 +244,12 @@ class tool_uploadpage_tracker {
             $ci = 0;
             $this->rownb++;
             $this->writehtmltablerowstart($this->rownb % 2);
-            $this->writehtmltablecell($message[0], $ci++));
-            $this->writehtmltablecell($message[1], $ci++));
-            $this->writehtmltablecell($message[2], $ci++));
-            $this->writehtmltablecell($message[3], $ci++));
-            $this->writehtmltablecell($message[4], $ci++));
-            $this->writehtmltablecell($message[5], $ci++));
+            $this->writehtmltablecell($message[0], $ci++);
+            $this->writehtmltablecell($message[1], $ci++);
+            $this->writehtmltablecell($message[2], $ci++);
+            $this->writehtmltablecell($message[3], $ci++);
+            $this->writehtmltablecell($message[4], $ci++);
+            $this->writehtmltablecell($message[5], $ci++);
             $this->writehtmltablecell(implode(html_writer::empty_tag('br'), $status), $ci++);
             $this->writehtmltablerowend();
         }

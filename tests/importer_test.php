@@ -127,7 +127,6 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
-        $importid = $importer->get_importid();
         $error = $importer->get_error();
 
         $this->assertTrue($error != "", "error".$error);
@@ -145,7 +144,6 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
-        $importid = $importer->get_importid();
         $error = $importer->get_error();
 
         $this->assertTrue($error != "", "error".$error);

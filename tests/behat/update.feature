@@ -1,11 +1,11 @@
 @tool @tool_uploadpage @_file_upload
-Feature: An admin can update a single page activity course using a CSV file
-  In order to update courses using a CSV file
+Feature: An admin can update a single page activity course using a text delimited file
+  In order to update courses using a text delimited file
   As an admin
-  I need to be able to upload a CSV file and navigate through the import process
+  I need to be able to upload a text delimited file and navigate through the import process
 
   @javascript
-  Scenario: Update of courses
+  Scenario: Update of course from file with comma delimiter
     Given the following "courses" exist:
         | fullname                                        | shortname                                        | idnumber                              |
         | C1b49aa30-e719-11e6-9835-f723b46a2688 Full Name | C1b49aa30-e719-11e6-9835-f723b46a2688 Short Name | C1b49aa30-e719-11e6-9835-f723b46a2688 |

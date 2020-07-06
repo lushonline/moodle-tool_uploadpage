@@ -43,7 +43,7 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
      *
      * @return void
      */
-    public function test_create() {
+    public function test_create_comma() {
         global $DB;
 
         $idnumber = 'C1b49aa30-e719-11e6-9835-f723b46a2688';
@@ -108,12 +108,10 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
 
         $importer = new tool_uploadpage_importer(null, null, null, $noneexistentid , $importid, null);
         $importer->execute();
-        $error = $importer->get_error();
 
         $this->assertFalse($DB->record_exists('course', array('idnumber' => $idnumber)));
-        $this->assertTrue($error != "", "error".$error);
+        $this->assertTrue($importer->haserrors(), 'Error Messages: '.implode(PHP_EOL, $importer->geterrors()));
     }
-
 
     /**
      * Confirms an error text is returned if empty CSV file
@@ -127,10 +125,8 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
-        $importid = $importer->get_importid();
-        $error = $importer->get_error();
 
-        $this->assertTrue($error != "", "error".$error);
+        $this->assertTrue($importer->haserrors(), 'Error Messages: '.implode(PHP_EOL, $importer->geterrors()));
     }
 
     /**
@@ -145,10 +141,8 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
-        $importid = $importer->get_importid();
-        $error = $importer->get_error();
 
-        $this->assertTrue($error != "", "error".$error);
+        $this->assertTrue($importer->haserrors(), 'Error Messages: '.implode(PHP_EOL, $importer->geterrors()));
     }
 
 }

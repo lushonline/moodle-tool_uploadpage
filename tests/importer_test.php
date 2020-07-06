@@ -43,7 +43,7 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
      *
      * @return void
      */
-    public function test_create() {
+    public function test_create_comma() {
         global $DB;
 
         $idnumber = 'C1b49aa30-e719-11e6-9835-f723b46a2688';
@@ -55,6 +55,138 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
+        $importid = $importer->get_importid();
+
+        $importer = new tool_uploadpage_importer(null, null, null, 1, $importid, null);
+        $importer->execute();
+
+        $course = null;
+        $page = null;
+        $cm = null;
+
+        $params = array('idnumber' => $idnumber);
+        if ($course = $DB->get_record('course', $params)) {
+            $params = array('idnumber' => $idnumber, 'course' => $course->id);
+            $cm = $DB->get_record('course_modules', $params);
+            $params = array('id' => $cm->instance, 'course' => $course->id);
+            $page = $DB->get_record('page', $params);
+        };
+
+        // Course exists.
+        $this->assertTrue($course->idnumber == $idnumber);
+
+        // Course Module.
+        $this->assertTrue($cm->idnumber == $idnumber);
+
+        // External content exists.
+        $this->assertTrue($page->id == $cm->instance);
+    }
+
+    /**
+     * Confirms that a single course and single activity can be created from semicolon delimited file
+     *
+     * @return void
+     */
+    public function test_create_semicolon() {
+        global $DB;
+
+        $idnumber = 'C1b49aa30-e719-11e6-9835-f723b46a2689';
+
+        $this->resetAfterTest(true);
+        $this->assertFalse($DB->record_exists('course', array('idnumber' => $idnumber)));
+
+        $source = __DIR__.'/fixtures/onecoursesemicolon.txt';
+        $content = file_get_contents($source);
+
+        $importer = new tool_uploadpage_importer($content, null, 'semicolon');
+        $importid = $importer->get_importid();
+
+        $importer = new tool_uploadpage_importer(null, null, null, 1, $importid, null);
+        $importer->execute();
+
+        $course = null;
+        $page = null;
+        $cm = null;
+
+        $params = array('idnumber' => $idnumber);
+        if ($course = $DB->get_record('course', $params)) {
+            $params = array('idnumber' => $idnumber, 'course' => $course->id);
+            $cm = $DB->get_record('course_modules', $params);
+            $params = array('id' => $cm->instance, 'course' => $course->id);
+            $page = $DB->get_record('page', $params);
+        };
+
+        // Course exists.
+        $this->assertTrue($course->idnumber == $idnumber);
+
+        // Course Module.
+        $this->assertTrue($cm->idnumber == $idnumber);
+
+        // External content exists.
+        $this->assertTrue($page->id == $cm->instance);
+    }
+
+    /**
+     * Confirms that a single course and single activity can be created from colon delimited file
+     *
+     * @return void
+     */
+    public function test_create_colon() {
+        global $DB;
+
+        $idnumber = 'C1b49aa30-e719-11e6-9835-f723b46a2699';
+
+        $this->resetAfterTest(true);
+        $this->assertFalse($DB->record_exists('course', array('idnumber' => $idnumber)));
+
+        $source = __DIR__.'/fixtures/onecoursecolon.txt';
+        $content = file_get_contents($source);
+
+        $importer = new tool_uploadpage_importer($content, null, 'colon');
+        $importid = $importer->get_importid();
+
+        $importer = new tool_uploadpage_importer(null, null, null, 1, $importid, null);
+        $importer->execute();
+
+        $course = null;
+        $page = null;
+        $cm = null;
+
+        $params = array('idnumber' => $idnumber);
+        if ($course = $DB->get_record('course', $params)) {
+            $params = array('idnumber' => $idnumber, 'course' => $course->id);
+            $cm = $DB->get_record('course_modules', $params);
+            $params = array('id' => $cm->instance, 'course' => $course->id);
+            $page = $DB->get_record('page', $params);
+        };
+
+        // Course exists.
+        $this->assertTrue($course->idnumber == $idnumber);
+
+        // Course Module.
+        $this->assertTrue($cm->idnumber == $idnumber);
+
+        // External content exists.
+        $this->assertTrue($page->id == $cm->instance);
+    }
+
+    /**
+     * Confirms that a single course and single activity can be created from tab delimited file
+     *
+     * @return void
+     */
+    public function test_create_tab() {
+        global $DB;
+
+        $idnumber = 'C1b49aa30-e719-11e6-9835-f723b46a2999';
+
+        $this->resetAfterTest(true);
+        $this->assertFalse($DB->record_exists('course', array('idnumber' => $idnumber)));
+
+        $source = __DIR__.'/fixtures/onecoursetab.txt';
+        $content = file_get_contents($source);
+
+        $importer = new tool_uploadpage_importer($content, null, 'tab');
         $importid = $importer->get_importid();
 
         $importer = new tool_uploadpage_importer(null, null, null, 1, $importid, null);
@@ -108,12 +240,10 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
 
         $importer = new tool_uploadpage_importer(null, null, null, $noneexistentid , $importid, null);
         $importer->execute();
-        $error = $importer->get_error();
 
         $this->assertFalse($DB->record_exists('course', array('idnumber' => $idnumber)));
-        $this->assertTrue($error != "", "error".$error);
+        $this->assertTrue($importer->haserrors(), 'Error Messages: '.implode(PHP_EOL, $importer->geterrors()));
     }
-
 
     /**
      * Confirms an error text is returned if empty CSV file
@@ -127,9 +257,8 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
-        $error = $importer->get_error();
 
-        $this->assertTrue($error != "", "error".$error);
+        $this->assertTrue($importer->haserrors(), 'Error Messages: '.implode(PHP_EOL, $importer->geterrors()));
     }
 
     /**
@@ -144,9 +273,8 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $content = file_get_contents($source);
 
         $importer = new tool_uploadpage_importer($content, null, null);
-        $error = $importer->get_error();
 
-        $this->assertTrue($error != "", "error".$error);
+        $this->assertTrue($importer->haserrors(), 'Error Messages: '.implode(PHP_EOL, $importer->geterrors()));
     }
 
 }

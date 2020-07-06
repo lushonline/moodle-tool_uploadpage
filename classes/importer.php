@@ -367,7 +367,7 @@ class tool_uploadpage_importer {
         $coursenotupdatedmsg = get_string('statuscoursenotupdated', 'tool_uploadpage');
         $pagecreatedmsg = get_string('statuspagecreated', 'tool_uploadpage');
         $pageupdatedmsg = get_string('statuspageupdated', 'tool_uploadpage');
-        $invalidimportrecordmsg = get_string('invalidimportrecord', 'tool_uploadpage');
+        $invalidrecordmsg = get_string('invalidimportrecord', 'tool_uploadpage');
 
         // Now actually do the work.
         foreach ($records as $record) {
@@ -465,7 +465,7 @@ class tool_uploadpage_importer {
                 }
             } else {
                 $errors++;
-                $status = array($invalidimportrecordmsg);
+                $status = array($invalidrecordmsg);
                 $tracker->output($this->linenb, false, $status, null);
             }
         }

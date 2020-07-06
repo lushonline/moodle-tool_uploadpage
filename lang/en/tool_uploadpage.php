@@ -24,7 +24,6 @@
 
 $string['pluginname'] = 'Upload single page courses';
 $string['importfile'] = 'CSV file';
-$string['invalidimportfile'] = 'File format is invalid.';
 $string['import'] = 'Import';
 $string['coursescreated'] = 'Courses created/updated successfully';
 
@@ -54,6 +53,19 @@ $string['courseserrors'] = 'Courses errors: {$a}';
 
 // CLI.
 $string['invalidcsvfile'] = 'File format is invalid.';
-$string['invalidencoding'] = 'Invalid encoding specified';
+$string['invalidencoding'] = 'Invalid encoding specified.';
 
 // Helper.
+
+// Importer.
+$string['invalidfileexception'] = 'File format is invalid. {$a}';
+$string['invalidimportfile'] = 'File format is invalid.';
+$string['invalidparentcategoryid'] = 'Parent category is invalid.';
+$string['invalidimportfileheaders'] = 'File headers are invalid. Not enough columns, please verify the delimiter setting.';
+$string['invalidimportfilenorecords'] = 'No records in import file.';
+$string['invalidimportrecord'] = 'Invalid Import Record.';
+$string['statuscoursecreated'] = 'Course Created.';
+$string['statuscourseupdated'] = 'Course Updated.';
+$string['statuscoursenotupdated'] = 'Course Not Updated.';
+$string['statuspagecreated'] = 'Page Activity Created.';
+$string['statuspageupdated'] = 'Page Activity Updated.';

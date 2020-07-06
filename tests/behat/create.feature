@@ -16,7 +16,7 @@ Feature: An admin can create a single page activity course using a text delimite
     And I am on site homepage
     And I should see "C1b49aa30-e719-11e6-9835-f723b46a2688 Full Name"
 
- @javascript
+  @javascript
   Scenario: Creation of non-existent course from file with colon delimiter
     When I log in as "admin"
     And I navigate to "Courses > Upload single page courses" in site administration

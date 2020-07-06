@@ -34,7 +34,6 @@ $pagetitle = get_string('pluginname', 'tool_uploadpage');
 $context = context_system::instance();
 
 $url = new moodle_url("/admin/tool/uploadpage/index.php");
-$returnurl = new moodle_url("/admin/tool/uploadpage/index.php");
 $PAGE->set_context($context);
 $PAGE->set_url($url);
 $PAGE->set_title($pagetitle);
@@ -45,12 +44,11 @@ $importid      = optional_param('importid', '', PARAM_INT);
 $confirm       = optional_param('confirm', '0', PARAM_BOOL);
 $needsconfirm  = optional_param('needsconfirm', '0', PARAM_BOOL);
 
-
 $text = null;
 $encoding = null;
 $delimiter = null;
 
-// First time - import_form returns a 0, and import_confirm_form a 1.
+// Importid is set on second form, so if empty we are on first step.
 if (empty($importid)) {
     $mform1 = new tool_uploadpage_import_form($url->out(false));
     // Was the first form submitted.
@@ -69,25 +67,30 @@ if (empty($importid)) {
 }
 
 $importer = new tool_uploadpage_importer($text, $encoding, $delimiter);
-unset($text);
+if ($importer->haserrors() && empty($importid)) {
+    throw new moodle_exception('invalidfileexception',
+                                'tool_uploadpage',
+                                $url,
+                                implode(PHP_EOL, $importer->geterrors())
+    );
+}
+
 $mform2 = new tool_uploadpage_import_confirm_form(null, $importer);
 
 // Was the second form submitted.
 if ($form2data = $mform2->is_cancelled()) {
-    redirect($returnurl);
+    redirect($url);
 } else if ($form2data = $mform2->get_data()) {
     $importid = $form2data->importid;
     $category = $form2data->category;
     $importer = new tool_uploadpage_importer(null, null, null, $category, $importid, $form2data);
-    $error = $importer->get_error();
-    if ($error) {
-        redirect($returnurl);
-    } else {
-        echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('uploadpageresult', 'tool_uploadpage'));
-        $records = $importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_HTML));
-        echo $OUTPUT->continue_button($url);
-    }
+    $processingresponse = $importer->execute(new tool_uploadpage_tracker(
+        tool_uploadpage_tracker::OUTPUT_HTML, false)
+    );
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('uploadpageresult', 'tool_uploadpage'));
+    echo $processingresponse;
+    echo $OUTPUT->continue_button($url);
 } else {
     // First time.
     echo $OUTPUT->header();

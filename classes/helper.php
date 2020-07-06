@@ -53,30 +53,15 @@ class tool_uploadpage_helper {
         // page intro.
         // page content.
 
-        if (empty($record->course_idnumber)) {
-            return false;
-        }
+        $isvalid = true;
+        $isvalid = $isvalid && !empty($record->course_idnumber);
+        $isvalid = $isvalid && !empty($record->course_shortname);
+        $isvalid = $isvalid && !empty($record->course_fullname);
+        $isvalid = $isvalid && !empty($record->page_name);
+        $isvalid = $isvalid && !empty($record->page_intro);
+        $isvalid = $isvalid && !empty($record->page_content);
 
-        if (empty($record->course_shortname)) {
-            return false;
-        }
-
-        if (empty($record->course_fullname)) {
-            return false;
-        }
-
-        if (empty($record->page_name)) {
-            return false;
-        }
-
-        if (empty($record->page_intro)) {
-            return false;
-        }
-
-        if (empty($record->page_content)) {
-            return false;
-        }
-        return true;
+        return $isvalid;
     }
 
     /**
@@ -105,17 +90,16 @@ class tool_uploadpage_helper {
         if (is_numeric($id)) {
             if ($DB->record_exists('course_categories', $params)) {
                 return $id;
-            } else {
-                return null;
             }
-        } else {
-            $params = array('idnumber' => $id);
-            try {
-                $id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, MUST_EXIST);
-                return $id;
-            } catch (Exception $e) {
-                return null;
-            }
+            return null;
+        }
+
+        $params = array('idnumber' => $id);
+        try {
+            $id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, MUST_EXIST);
+            return $id;
+        } catch (Exception $e) {
+            return null;
         }
     }
 
@@ -130,13 +114,7 @@ class tool_uploadpage_helper {
         global $DB;
 
         $params = array('name' => $name, 'course' => $courseid);
-        $pages = $DB->get_records('page', $params);
-
-        if (count($pages) != 0) {
-             return array_pop($pages);
-        } else {
-             return null;
-        }
+        return $DB->get_record('page', $params);
     }
 
     /**
@@ -149,23 +127,15 @@ class tool_uploadpage_helper {
         global $DB;
 
         $params = array('idnumber' => $courseidnumber);
-        $courses = $DB->get_records('course', $params);
-
-        if (count($courses) == 1) {
-            $course = array_pop($courses);
+        if ($course = $DB->get_record('course', $params)) {
             $tags = core_tag_tag::get_item_tags_array('core', 'course', $course->id,
                                         core_tag_tag::BOTH_STANDARD_AND_NOT, 0, false);
-
             $course->tags = array();
-
-            foreach ($tags as $key => $value) {
+            foreach ($tags as $value) {
                 array_push($course->tags, $value);
             }
-
-            return $course;
-        } else {
-            return null;
         }
+        return $course;
     }
 
     /**
@@ -184,11 +154,10 @@ class tool_uploadpage_helper {
         $course->summaryformat = 1; // FORMAT_HTML.
         $course->visible = $record->course_visible;
 
+        $course->tags = array();
         // Split the tag string into an array.
         if (!empty($record->course_tags)) {
             $course->tags = explode($tagdelimiter, $record->course_tags);
-        } else {
-            $course->tags = array();
         }
 
         // Fixed default values.
@@ -219,9 +188,7 @@ class tool_uploadpage_helper {
         $categoryid = $record->category;
 
         if (!empty($record->course_categoryidnumber)) {
-            $categoryid = self::resolve_category_by_idnumber($record->course_categoryidnumber);
-            if ($categoryid === false) {
-
+            if (!$categoryid = self::resolve_category_by_idnumber($record->course_categoryidnumber)) {
                 if (!empty($record->course_categoryname)) {
                     // Category not found and we have a name so we need to create.
                     $category = new \stdClass();
@@ -265,106 +232,54 @@ class tool_uploadpage_helper {
     }
 
     /**
-     * Merge changes from $importedcourse into $existingcourse
+     * Merge changes from $imported into $existing
      *
-     * @param object $existingcourse Course Record for existing course
-     * @param object $importedcourse  Course Record for imported course
+     * @param object $existing Course Record for existing course
+     * @param object $imported Course Record for imported course
      * @return object course or FALSE if no changes
      */
-    public static function update_course_with_import_course($existingcourse, $importedcourse) {
-        $updateneeded = false;
-        $result = $existingcourse;
-        $updates = array();
+    public static function update_course_with_import_course($existing, $imported) {
+        // Sort the tags arrays.
+        sort($existing->tags);
+        sort($imported->tags);
 
-        if ($existingcourse->fullname !== $importedcourse->fullname) {
-            array_push($updates, "fullname is different");
-            $result->fullname = $importedcourse->fullname;
-            $updateneeded = true;
-        }
-
-        if ($existingcourse->shortname !== $importedcourse->shortname) {
-            array_push($updates, "shortname is different");
-            $result->shortname = $importedcourse->shortname;
-            $updateneeded = true;
-        }
-
-        if ($existingcourse->idnumber !== $importedcourse->idnumber) {
-            array_push($updates, "idnumber is different");
-            $result->idnumber = $importedcourse->idnumber;
-            $updateneeded = true;
-        }
+        $result = clone $existing;
+        $result->fullname = $imported->fullname;
+        $result->shortname = $imported->shortname;
+        $result->idnumber = $imported->idnumber;
+        $result->visible = $imported->visible;
+        $result->tags = $imported->tags;
+        $result->category = $imported->category;
 
         // We need to apply Moodle FORMAT_HTML conversion as this is how summary would have been stored.
-        $options = array();
-        $options['filter'] = false;
-        $formatted = format_text($importedcourse->summary, FORMAT_HTML, $options);
-
-        if ($existingcourse->summary !== $formatted) {
-            array_push($updates, "summary is different");
-            $result->summary = $importedcourse->summary;
-            $updateneeded = true;
+        if ($existing->summary !== format_text($imported->summary, FORMAT_HTML, array('filter' => false))) {
+            $result->summary = $imported->summary;
         }
 
-        if ($existingcourse->visible !== $importedcourse->visible) {
-            array_push($updates, "visible is different");
-            $result->visible = $importedcourse->visible;
-            $updateneeded = true;
-        }
-
-        // Sort the arrays and then compare.
-        sort($existingcourse->tags);
-        sort($importedcourse->tags);
-
-        if ($existingcourse->tags !== $importedcourse->tags) {
-            array_push($updates, "tags is different");
-            $result->tags = $importedcourse->tags;
-            $updateneeded = true;
-        }
-
-        if ($existingcourse->category !== $importedcourse->category) {
-            array_push($updates, "category is different");
-            $result->category = $importedcourse->category;
-            $updateneeded = true;
-        }
-
-        if ($updateneeded) {
+        if ($result != $existing) {
             return $result;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
-     * Merge changes from $importedpage into $existingpage
+     * Merge changes from $imported into $existing
      *
-     * @param object $existingpage Page Record for existing page
-     * @param object $importedpage  page Record for imported page
+     * @param object $existing Page Record for existing page
+     * @param object $imported page Record for imported page
      * @return object page or FALSE if no changes
      */
-    public static function update_page_with_import_page($existingpage, $importedpage) {
-        $updateneeded = false;
-        $result = $existingpage;
+    public static function update_page_with_import_page($existing, $imported) {
+        $result = clone $existing;
 
-        if ($existingpage->name !== $importedpage->name) {
-            $result->name = $importedpage->name;
-            $updateneeded = true;
-        }
+        $result->name = $imported->name;
+        $result->intro = $imported->intro;
+        $result->content = $imported->content;
 
-        if ($existingpage->intro !== $importedpage->intro) {
-            $result->intro = $importedpage->intro;
-            $updateneeded = true;
-        }
-
-        if ($existingpage->content !== $importedpage->content) {
-            $result->content = $importedpage->content;
-            $updateneeded = true;
-        }
-
-        if ($updateneeded) {
+        if ($result != $existing) {
             return $result;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -378,7 +293,7 @@ class tool_uploadpage_helper {
         $criterion = new completion_criteria_activity();
 
         $params = array('id' => $course->id, 'criteria_activity' => array($cm->id => 1));
-        if ($currentcriteria = $criterion->fetch($params)) {
+        if ($criterion->fetch($params)) {
             return;
         }
 
@@ -391,25 +306,23 @@ class tool_uploadpage_helper {
         // Handle overall aggregation.
         $aggdata = array(
             'course'        => $course->id,
-            'criteriatype'  => null
+            'criteriatype'  => null,
+            'method' => COMPLETION_AGGREGATION_ALL
         );
+
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
 
         $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_ACTIVITY;
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
 
         $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_COURSE;
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
 
         $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_ROLE;
         $aggregation = new completion_aggregation($aggdata);
-        $aggregation->setMethod(COMPLETION_AGGREGATION_ALL);
         $aggregation->save();
     }
 }

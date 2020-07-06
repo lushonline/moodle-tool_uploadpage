@@ -107,12 +107,9 @@ $importer = new tool_uploadpage_importer($content, $options['encoding'], $option
 $importid = $importer->get_importid();
 unset($content);
 
-$error = $importer->get_error();
-if ($error) {
-    print_error('invalidimportfile', 'tool_uploadpage', '', $importer->get_error());
-} else if (count($importer->records) == 0) {
-    print_error('csvemptyfile', 'error', '', $importer->get_error());
+if ($importer->haserrors()) {
+    print_error('invalidimportfile', 'tool_uploadpage', '', implode(PHP_EOL, $importer->get_error()));
 }
 
 $importer = new tool_uploadpage_importer(null, null, null, $options['categoryid'], $importid, null);
-$importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_PLAIN));
+$importer->execute(new tool_uploadpage_tracker(tool_uploadpage_tracker::OUTPUT_PLAIN, true));

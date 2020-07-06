@@ -349,14 +349,8 @@ class tool_uploadpage_importer {
         $tracker->start();
 
         $generator = phpunit_util::get_data_generator();
-        $records = $this->records;
 
-        $total = 0;
-        $created = 0;
-        $updated = 0;
-        $deleted = 0;
-        $nochange = 0;
-        $errors = 0;
+        $total = $created = $updated = $deleted = $nochange = $errors = 0;
 
         // We will most certainly need extra time and memory to process big files.
         core_php_time_limit::raise();
@@ -370,7 +364,7 @@ class tool_uploadpage_importer {
         $invalidrecordmsg = get_string('invalidimportrecord', 'tool_uploadpage');
 
         // Now actually do the work.
-        foreach ($records as $record) {
+        foreach ($this->records as $record) {
             $this->linenb++;
             $total++;
 
@@ -379,28 +373,21 @@ class tool_uploadpage_importer {
                 $page = tool_uploadpage_helper::create_page_from_import_record($record);
 
                 if ($existing = tool_uploadpage_helper::get_course_by_idnumber($course->idnumber)) {
-                    $updatecourse = false;
-                    $mergedcourse = tool_uploadpage_helper::update_course_with_import_course($existing, $course);
-                    if ($mergedcourse === false) {
+                    $updatecourse = true;
+                    if (!$mergedcourse = tool_uploadpage_helper::update_course_with_import_course($existing, $course)) {
                         $updatecourse = false;
                         $mergedcourse = $existing;
-                    } else {
-                        $updatecourse = true;
                     }
 
                     // Now check the page.
-                    $addpage = false;
-                    $updatepage = false;
-                    $existingpage = tool_uploadpage_helper::get_page_by_name($page->name, $mergedcourse->id);
+                    $addpage = $updatepage = false;
 
-                    if ($existingpage) {
-                        $mergedpage = tool_uploadpage_helper::update_page_with_import_page($existingpage, $page);
+                    if ($existingpage = tool_uploadpage_helper::get_page_by_name($page->name, $mergedcourse->id)) {
                         $addpage = false;
                         $updatepage = true;
 
-                        if ($mergedpage === false) {
-                            $updatepage = false;
-                            $addpage = false;
+                        if (!$mergedpage = tool_uploadpage_helper::update_page_with_import_page($existingpage, $page)) {
+                            $updatepage = $addpage = false;
                             $mergedpage = $page;
                         }
                     } else {

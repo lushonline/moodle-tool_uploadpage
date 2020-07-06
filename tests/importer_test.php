@@ -38,7 +38,6 @@ require_once($CFG->libdir . '/csvlib.class.php');
  */
 class tool_uploadpage_importer_testcase extends advanced_testcase {
 
-
     /**
      * Confirms that a single course and single activity can be created
      *

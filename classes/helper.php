@@ -219,11 +219,16 @@ class tool_uploadpage_helper {
         // All data provided by the data generator.
         $page = new \stdClass();
         $page->name = $record->page_name;
-        $page->printintro = 0;
-        $page->printheading = 1;
         $page->intro = $record->page_intro;
         $page->content = $record->page_content;
         $page->contentformat = 1; // FORMAT_HTML.
+
+        $page->display = $record->page_display;
+        $page->popupheight = $record->page_popupheight;
+        $page->popupwidth = $record->page_popupwidth;
+        $page->printintro = $record->page_printintro;
+        $page->printheading = $record->page_printheading;
+        $page->printlastmodified = $record->page_printlastmodified;
 
         $page->completion = 2;
         $page->completionview = 1;

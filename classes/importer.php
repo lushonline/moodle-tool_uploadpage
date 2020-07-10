@@ -277,6 +277,11 @@ class tool_uploadpage_importer {
         // Retrieve the Page defaults.
         $pagedefaults = get_config('page');
 
+        // Fix for #8 - as this property only introduced in 3.6.
+        if (!property_exists($pagedefaults, 'printlastmodified')) {
+            $pagedefaults->printlastmodified = 0;
+        }
+
         $record = null;
         $records = array();
 

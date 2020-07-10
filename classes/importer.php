@@ -274,6 +274,9 @@ class tool_uploadpage_importer {
             return;
         }
 
+        // Retrieve the Page defaults.
+        $pagedefaults = get_config('page');
+
         $record = null;
         $records = array();
 
@@ -292,6 +295,13 @@ class tool_uploadpage_importer {
             $record->page_name = $this->get_row_data($row, $mapping['page_name']);
             $record->page_intro = $this->get_row_data($row, $mapping['page_intro']);
             $record->page_content = $this->get_row_data($row, $mapping['page_content']);
+
+            $record->page_display = $pagedefaults->display;
+            $record->page_popupheight = $pagedefaults->popupheight;
+            $record->page_popupwidth = $pagedefaults->popupwidth;
+            $record->page_printheading = $pagedefaults->printheading;
+            $record->page_printintro = $pagedefaults->printintro;
+            $record->page_printlastmodified = $pagedefaults->printlastmodified;
 
             $record->category = $category;
             array_push($records, $record);

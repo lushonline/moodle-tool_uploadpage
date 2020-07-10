@@ -223,9 +223,9 @@ class tool_uploadpage_helper {
         $page->content = $record->page_content;
         $page->contentformat = 1; // FORMAT_HTML.
 
-        $page->display =  $record->page_display;
-        $page->popupheight =  $record->page_popupheight;
-        $page->popupwidth =  $record->page_popupwidth;
+        $page->display = $record->page_display;
+        $page->popupheight = $record->page_popupheight;
+        $page->popupwidth = $record->page_popupwidth;
         $page->printintro = $record->page_printintro;
         $page->printheading = $record->page_printheading;
         $page->printlastmodified = $record->page_printlastmodified;

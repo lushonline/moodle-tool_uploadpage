@@ -57,7 +57,7 @@ class tool_uploadpage_importer_testcase extends advanced_testcase {
         $importer = new tool_uploadpage_importer($content, null, null);
         $importid = $importer->get_importid();
 
-        $importer = new tool_uploadpage_importer(null, null, null, 1, $importid, null);
+        $importer = new tool_uploadpage_importer(null, null, null, null, $importid, null);
         $importer->execute();
 
         $course = null;

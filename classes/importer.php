@@ -236,7 +236,7 @@ class tool_uploadpage_importer {
      * @param object $mappingdata
      */
     public function __construct($text = null, $encoding = null, $delimiter = 'comma',
-                                $category=1, $importid = 0, $mappingdata = null) {
+                                $category=null, $importid = 0, $mappingdata = null) {
         global $CFG;
         require_once($CFG->libdir . '/csvlib.class.php');
 

@@ -28,7 +28,6 @@ defined('MOODLE_INTERNAL') || die;
 global $CFG;
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/completion/criteria/completion_criteria_activity.php');
-require_once($CFG->dirroot . '/course/lib.php');
 
 /**
  * Class containing a set of helpers.
@@ -90,11 +89,10 @@ class tool_uploadpage_helper {
 
         if (is_null($id)) {
             try {
-                if (method_exists('\core_course_category', 'get_default')) {
-                    $id = core_course_category::get_default();
-                } else {
-                    require_once($CFG->libdir . '/coursecatlib.php');
-                    $id = coursecat::get_default();
+                $gettop1categories = $DB->get_records('course_categories', null, 'id asc', '*', 0, 1);
+                if (count($gettop1categories) != 0) {
+                    $firstcategory = array_pop($gettop1categories);
+                    $id = $firstcategory->id;
                 }
                 return $id;
             } catch (Exception $e) {

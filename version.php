@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version   = 2020071003; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2020071004; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2016052300; // Requires this Moodle version v3.1 see https://docs.moodle.org/dev/Releases.
 $plugin->component = 'tool_uploadpage'; // Full name of the plugin (used for diagnostics).
 $plugin->dependencies = [];

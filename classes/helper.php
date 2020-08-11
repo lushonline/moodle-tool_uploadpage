@@ -93,6 +93,7 @@ class tool_uploadpage_helper {
                 if (method_exists('\core_course_category', 'get_default')) {
                     $id = core_course_category::get_default();
                 } else {
+                    require_once($CFG->libdir . '/coursecatlib.php');
                     $id = coursecat::get_default();
                 }
                 return $id;

@@ -29,12 +29,7 @@ require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/phpunit/classes/util.php');
 require_once($CFG->libdir . '/clilib.php');
 
-if (method_exists('\core_course_category', 'get_default')) {
-    $defaultcategory = core_course_category::get_default()->id;
-} else {
-    require_once($CFG->libdir . '/coursecatlib.php');
-    $defaultcategory = coursecat::get_default()->id;
-}
+$pluginversion = get_config('tool_uploadpage', 'version');
 
 // Now get cli options.
 list($options, $unrecognized) = cli_get_params(array(
@@ -42,7 +37,7 @@ list($options, $unrecognized) = cli_get_params(array(
     'source' => '',
     'delimiter' => 'comma',
     'encoding' => 'UTF-8',
-    'categoryid' => $defaultcategory
+    'categoryid' => tool_uploadpage_helper::resolve_category_by_id_or_idnumber(null)
 ),
 array(
     'h' => 'help',
@@ -53,30 +48,37 @@ array(
 ));
 
 if ($unrecognized) {
-    $unrecognized = implode("\n  ", $unrecognized);
+    $unrecognized = implode(PHP_EOL."  ", $unrecognized);
     cli_error(get_string('cliunknowoption', 'admin', $unrecognized));
 }
 
-$help =
-"Execute Course Upload.
-
-Options:
--h, --help                 Print out this help
--s, --source               CSV file
--d, --delimiter            CSV delimiter: colon, semicolon, tab, cfg, comma
--e, --encoding             CSV file encoding: utf8, ... etc
--c, --categoryid           ID of default category
-
-
-Example:
-\$sudo -u www-data /usr/bin/php admin/tool/uploadpage/cli/uploadpage.php --source=./courses.csv --delimiter=comma
-";
+$help = get_string('pluginname', 'tool_uploadpage')." (".$pluginversion.")".PHP_EOL;
+$help .= PHP_EOL;
+$help .= "Options:".PHP_EOL;
+$help .= "-h, --help                 Print out this help".PHP_EOL;
+$help .= "-s, --source               CSV file".PHP_EOL;
+$help .= "-d, --delimiter            CSV delimiter: colon, semicolon, tab, cfg, comma. Default: comma".PHP_EOL;
+$help .= "-e, --encoding             CSV file encoding: UTF-8, ... Default: UTF-8".PHP_EOL;
+$help .= "-c, --categoryid           ID of default category. Default: first category on site".PHP_EOL;
+$help .= PHP_EOL;
+$help .= "Example:".PHP_EOL;
+$help .= "sudo -u www-data /usr/bin/php admin/tool/uploadpage/cli/uploadpage.php -s=./courses.csv -d=comma -e=UTF-8 -c=1".PHP_EOL;
 
 if ($options['help']) {
     echo $help;
     die();
 }
-echo "Moodle Single Page Course uploader running ...\n";
+
+$start = get_string('pluginname', 'tool_uploadpage')." (".$pluginversion.")".PHP_EOL;
+$start .= PHP_EOL;
+$start .= "Options Used:".PHP_EOL;
+$start .= "--source = ".$options['source'].PHP_EOL;
+$start .= "--delimiter = ".$options['delimiter'].PHP_EOL;
+$start .= "--encoding = ".$options['encoding'].PHP_EOL;
+$start .= "--categoryid = ".$options['categoryid'].PHP_EOL;
+$start .= PHP_EOL;
+
+echo $start;
 
 // File.
 if (!empty($options['source'])) {
@@ -84,7 +86,7 @@ if (!empty($options['source'])) {
 }
 
 if (!file_exists($options['source'])) {
-    echo get_string('invalidcsvfile', 'tool_uploadpage')."\n";
+    echo get_string('invalidcsvfile', 'tool_uploadpage').PHP_EOL;
     echo $help;
     die();
 }
@@ -92,7 +94,14 @@ if (!file_exists($options['source'])) {
 // Encoding.
 $encodings = core_text::get_encodings();
 if (!isset($encodings[$options['encoding']])) {
-    echo get_string('invalidencoding', 'tool_uploadpage')."\n";
+    echo get_string('invalidencoding', 'tool_uploadpage').PHP_EOL;
+    echo $help;
+    die();
+}
+
+// Category id check.
+if (!tool_uploadpage_helper::resolve_category_by_id_or_idnumber($options['categoryid'])) {
+    echo get_string('invalidparentcategoryid', 'tool_uploadpage').PHP_EOL;
     echo $help;
     die();
 }
@@ -108,7 +117,9 @@ $importid = $importer->get_importid();
 unset($content);
 
 if ($importer->haserrors()) {
-    print_error('invalidimportfile', 'tool_uploadpage', '', implode(PHP_EOL, $importer->get_error()));
+    echo "Errors Reported during import:".PHP_EOL;
+    echo implode(PHP_EOL, $importer->geterrors());
+    die();
 }
 
 $importer = new tool_uploadpage_importer(null, null, null, $options['categoryid'], $importid, null);

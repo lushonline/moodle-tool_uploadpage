@@ -71,7 +71,7 @@ class tool_uploadpage_helper {
      * @return int category ID.
      */
     public static function resolve_category_by_idnumber($idnumber) {
-          global $DB;
+        global $DB;
 
         $params = array('idnumber' => $idnumber);
         $id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, IGNORE_MISSING);
@@ -85,21 +85,22 @@ class tool_uploadpage_helper {
      * @return int category ID.
      */
     public static function resolve_category_by_id_or_idnumber($id) {
-        global $DB;
+        global $CFG, $DB;
 
+        // Handle null id by selecting the first non zero category id.
         if (is_null($id)) {
-            try {
-                $gettop1categories = $DB->get_records('course_categories', null, 'id asc', '*', 0, 1);
-                if (count($gettop1categories) != 0) {
-                    $firstcategory = array_pop($gettop1categories);
-                    $id = $firstcategory->id;
-                }
+            if (method_exists('\core_course_category', 'create')) {
+                $id = core_course_category::get_default()->id;
                 return $id;
-            } catch (Exception $e) {
-                return null;
+            } else {
+                require_once($CFG->libdir . '/coursecatlib.php');
+                $id = coursecat::get_default()->id;
+                return $id;
             }
+            return null;
         }
 
+        // Handle numeric id by confirming it exists.
         $params = array('id' => $id);
         if (is_numeric($id)) {
             if ($DB->record_exists('course_categories', $params)) {
@@ -108,13 +109,12 @@ class tool_uploadpage_helper {
             return null;
         }
 
+        // Handle any other id format by treating as a string idnumber value.
         $params = array('idnumber' => $id);
-        try {
-            $id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, MUST_EXIST);
+        if ($id = $DB->get_field_select('course_categories', 'id', 'idnumber = :idnumber', $params, MUST_EXIST)) {
             return $id;
-        } catch (Exception $e) {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -209,7 +209,6 @@ class tool_uploadpage_helper {
                     $category->parent = $record->category;
                     $category->name = $record->course_categoryname;
                     $category->idnumber = $record->course_categoryidnumber;
-
                     if (method_exists('\core_course_category', 'create')) {
                         $createdcategory = core_course_category::create($category);
                     } else {

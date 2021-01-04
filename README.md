@@ -1,5 +1,5 @@
 # tool_uploadpage
-[![Build Status](https://travis-ci.org/lushonline/moodle-tool_uploadpage.svg?branch=master)](https://travis-ci.org/lushonline/moodle-tool_uploadpage)
+![Moodle Plugin CI](https://github.com/lushonline/moodle-tool_uploadpage/workflows/Moodle%20Plugin%20CI/badge.svg?branch=master)
 
 A tool to allow import of HTML as Page Activities using a comma separated value file (CSV).
 
